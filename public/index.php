@@ -8,6 +8,11 @@ require __DIR__ . '/../src/settings.php';
 
 $app = AppFactory::create();
 
+$app->get('/', function ($request, $response, $args) {
+    $response->getBody()->write("Hello, PrayWall!");
+    return $response;
+});
+
 // Example route
 $app->get('/posts', 'PrayerController:getPosts');
 
