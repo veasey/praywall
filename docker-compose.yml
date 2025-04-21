@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: praywall_app
+    build: .
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    container_name: praywall_db
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - "4507:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: praywall
+    volumes:
+      - praywall_dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  praywall_dbdata:
