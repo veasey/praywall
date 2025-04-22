@@ -3,8 +3,6 @@ version: '3.8'
 services:
   app:
     container_name: praywall_app
-    environment:
-      - APP_ENV=local
     build: .
     ports:
       - "8000:80"

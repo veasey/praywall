@@ -2,12 +2,12 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->load();
 
 $env = $_ENV['APP_ENV'] ?? 'production';
 
-if ($env !== 'local') {
+if ($env !== 'development') {
     die("🚨 Migrations are disabled in $env environment.\n");
 }
 

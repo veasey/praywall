@@ -4,7 +4,12 @@ use Slim\App;
 
 return function (App $app) {
     $app->get('/migrate', function ($request, $response, $args) {
-        if (getenv('APP_ENV') !== 'development') {
+
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');  // Go up one level to load .env from the root
+        $dotenv->load();
+        $environment = $_ENV['APP_ENV'];
+
+        if ($environment !== 'development') {
             $response->getBody()->write('Forbidden');
             return $response->withStatus(403);
         }
