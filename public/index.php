@@ -1,28 +1,24 @@
 <?php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+// The door to the Prayer Wall
 use Slim\Factory\AppFactory;
+use Slim\Views\TwigMiddleware;
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../src/settings.php';
+require __DIR__ . '/../src/settings.php';   // loads Dotenv into $_ENV
 
+$container = require __DIR__ . '/../src/container.php';
+AppFactory::setContainer($container);
 $app = AppFactory::create();
+$app->add(TwigMiddleware::createFromContainer($app, \Slim\Views\Twig::class));
 
-// Dynamically load all route files
+// Register routes — each route a new opportunity to serve the community and bring others closer to the Lord
 $routesPath = __DIR__ . '/../src/routes';
 foreach (glob($routesPath . '/*.php') as $routeFile) {
     (require $routeFile)($app);
 }
 
-// Custom 404 handler
-$errorMiddleware = $app->addErrorMiddleware(true, true, true);
-$errorMiddleware->setErrorHandler(
-    Slim\Exception\HttpNotFoundException::class,
-    function (Request $request, Throwable $exception, bool $displayErrorDetails) use ($app) {
-        $response = $app->getResponseFactory()->createResponse();
-        $response->getBody()->write('<h1>Page Not Found</h1><p>The page you are looking for does not exist.</p>');
-        return $response->withStatus(404);
-    }
-);
+// Handle errors with grace — "For the Lord is close to the brokenhearted" (Psalm 34:18)
+// When someone loses their way, we help them find it and walk them home
+require __DIR__ . '/../src/errorHandler.php';
 
 $app->run();
