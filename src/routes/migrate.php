@@ -5,7 +5,7 @@ use Slim\App;
 return function (App $app) {
     $app->get('/migrate', function ($request, $response, $args) {
 
-        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');  // Go up one level to load .env from the root
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..'); 
         $dotenv->load();
         $environment = $_ENV['APP_ENV'];
 
