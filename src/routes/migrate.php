@@ -5,7 +5,8 @@ use Slim\App;
 return function (App $app) {
     $app->get('/migrate', function ($request, $response, $args) {
         if (getenv('APP_ENV') !== 'development') {
-            return $response->withStatus(403)->write('Forbidden');
+            $response->getBody()->write('Forbidden');
+            return $response->withStatus(403);
         }
 
         include __DIR__ . '/../setup/migrate.php';
