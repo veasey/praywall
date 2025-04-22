@@ -8,5 +8,5 @@ return function (App $app) {
     $controller = $app->getContainer()->get(PrayerController::class);
 
     $app->get('/', [$controller, 'listPrayers']);
-    $app->get('/home', [$controller, 'listPrayers']);
+    $app->get('/prayers', [$controller, 'listPrayers']);
 };
