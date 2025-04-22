@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->load();
@@ -27,12 +27,12 @@ try {
 try {
 
     // Load and run schema.sql
-    $schemaSql = file_get_contents(__DIR__ . '/schema.sql');
+    $schemaSql = file_get_contents(__DIR__ . '/../../db/schema.sql');
     $pdo->exec($schemaSql);
     echo "Schema applied.\n";
 
     // Load and run seed.sql
-    $seedSql = file_get_contents(__DIR__ . '/seed.sql');
+    $seedSql = file_get_contents(__DIR__ . '/../../db/seed.sql');
     $pdo->exec($seedSql);
     echo "Test data seeded.\n";
 
