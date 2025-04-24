@@ -32,4 +32,33 @@ class ModerateController
             'unapproved' => $unapproved
         ]);
     }
+
+    public function approvePrayer(Request $request, Response $response, $args)
+    {
+        $data = $request->getParsedBody();
+        $stmt = $this->db->prepare("
+            UPDATE prayers 
+            SET approved = TRUE 
+            WHERE id = :id
+        ");
+        $stmt->execute(['id' => $data['id']]);
+
+        return $response
+                ->withHeader('Location', '/moderate')
+                ->withStatus(302);
+    }
+
+    public function denyPrayer(Request $request, Response $response, $args)
+    {
+        $data = $request->getParsedBody();
+        $stmt = $this->db->prepare("
+            DELETE FROM prayers 
+            WHERE id = :id
+        ");
+        $stmt->execute(['id' => $data['id']]);
+
+        return $response
+                ->withHeader('Location', '/moderate')
+                ->withStatus(302);
+    }
 }
