@@ -1,5 +1,8 @@
 <?php
 // The door to the Prayer Wall
+
+session_start();
+
 use Slim\Factory\AppFactory;
 use Slim\Views\TwigMiddleware;
 
