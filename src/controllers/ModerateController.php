@@ -18,7 +18,7 @@ class ModerateController
         $this->db   = $db;
     }
 
-    public function listPrayers(Request $request, Response $response, $args)
+    public function dashboard(Request $request, Response $response, $args)
     {
         $stmt = $this->db->query("
             SELECT * 
