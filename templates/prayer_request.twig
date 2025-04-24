@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PrayWall</title>
+</head>
+<body>
+  <h1>Prayer Request Form</h1>
+  
+  <form action="/prayers/request" method="POST">
+    <label for="title">Headline:</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+
+    <label for="body">Your Prayer Request:</label><br>
+    <textarea id="body" name="body" rows="5" required></textarea><br><br>
+
+    <button type="submit">Submit</button>
+  </form>
+  
+</body>
+</html>

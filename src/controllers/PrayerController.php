@@ -39,13 +39,72 @@ class PrayerController
 
     public function listPrayers(Request $request, Response $response, $args)
     {
-        // Example query — replace with actual DB logic
-        $stmt = $this->db->query("SELECT * FROM prayers ORDER BY date_posted DESC");
+        $stmt = $this->db->query("
+            SELECT * 
+            FROM prayers 
+            WHERE approved = TRUE
+            ORDER BY date_posted DESC
+        ");
         $prayers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Render the template using the injected Twig view
         return $this->view->render($response, 'prayers.twig', [
             'prayers' => $prayers
         ]);
+    }
+
+    public function prayerRequest(Request $request, Response $response, $args)
+    {
+        // Handle the prayer request form submission
+        if ($request->getMethod() === 'POST') {
+            $data = $request->getParsedBody();
+            $stmt = $this->db->prepare("
+                INSERT INTO prayers (title, body, date_posted) 
+                VALUES (:title, :body, NOW())
+            ");
+            $stmt->execute([
+                ':title'          => $data['title'],
+                ':body' => $data['body']
+            ]);
+
+            // Render a confirmation page
+            return $this->view->render($response, 'prayer_request_success.twig', [
+                'message' => 'Your prayer request has been submitted successfully!',
+                'home_url' => '/prayers'
+            ]);
+        }
+
+        return $this->view->render($response, 'prayer_request.twig');
+    }
+    public function approvePrayer(Request $request, Response $response, $args)
+    {
+        // Handle the prayer approval
+        $stmt = $this->db->prepare("
+            UPDATE prayers 
+            SET approved = TRUE 
+            WHERE id = :id
+        ");
+        $stmt->execute([
+            ':id' => $args['id']
+        ]);
+
+        return $response
+                ->withHeader('Location', '/prayers')
+                ->withStatus(302);
+    }
+
+    public function deletePrayer(Request $request, Response $response, $args)
+    {
+        // Handle the prayer deletion
+        $stmt = $this->db->prepare("
+            DELETE FROM prayers 
+            WHERE id = :id
+        ");
+        $stmt->execute([
+            ':id' => $args['id']
+        ]);
+
+        return $response
+                ->withHeader('Location', '/prayers')
+                ->withStatus(302);
     }
 }

@@ -10,9 +10,9 @@ INSERT INTO users (name, email, password_hash, role) VALUES
 ('Tom Lee', 'tom@example.com', 'hashedpassword3', 'user');
 
 -- Test Prayers
-INSERT INTO prayers (user_id, church_id, title, body) VALUES
-(1, 1, 'Healing for my wife', 'Please pray for my wife who is undergoing surgery next week.'),
-(2, 2, 'Job interview', 'Praying for guidance and peace as I go into an interview tomorrow.');
+INSERT INTO prayers (user_id, church_id, title, body, approved) VALUES
+(1, 1, 'Healing for my wife', 'Please pray for my wife who is undergoing surgery next week.', TRUE),
+(2, 2, 'Job interview', 'Praying for guidance and peace as I go into an interview tomorrow.', FALSE);
 
 -- Test Prayed By records
 INSERT INTO prayers_prayed_by (user_id, prayer_id) VALUES

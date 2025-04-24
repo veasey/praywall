@@ -9,4 +9,7 @@ return function (App $app) {
 
     $app->get('/', [$controller, 'listPrayers']);
     $app->get('/prayers', [$controller, 'listPrayers']);
+    
+    $app->get('/prayers/request', [$controller, 'prayerRequest']);
+    $app->post('/prayers/request', [$controller, 'prayerRequest']);
 };
