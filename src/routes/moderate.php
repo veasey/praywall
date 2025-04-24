@@ -7,6 +7,5 @@ return function (App $app) {
 
     $controller = $app->getContainer()->get(ModerateController::class);
 
-    // routes here ...
-    // $app->get('/', [$controller, 'listUnapprovedPrayers']);
+    $app->get('/moderate', [$controller, 'listPrayers']);
 };

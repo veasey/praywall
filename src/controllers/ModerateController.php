@@ -17,4 +17,19 @@ class ModerateController
         $this->view = $view;
         $this->db   = $db;
     }
+
+    public function listPrayers(Request $request, Response $response, $args)
+    {
+        $stmt = $this->db->query("
+            SELECT * 
+            FROM prayers 
+            WHERE approved = FALSE
+            ORDER BY date_posted DESC
+        ");
+        $unapproved = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $this->view->render($response, 'moderate.twig', [
+            'unapproved' => $unapproved
+        ]);
+    }
 }
