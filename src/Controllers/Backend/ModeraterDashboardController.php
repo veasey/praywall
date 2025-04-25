@@ -1,12 +1,17 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Backend;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use PDO;
 use Slim\Views\Twig;
 
-class ModerateController
+/**
+ * Summary of ModeraterDashboardController
+ * - approves or denies prayer requests
+ * - displays unapproved prayer requests
+ */
+class ModeraterDashboardController
 {
     private TWIG $view;
     private PDO  $db;
@@ -28,7 +33,7 @@ class ModerateController
         ");
         $unapproved = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $this->view->render($response, 'moderate.twig', [
+        return $this->view->render($response, 'backend/moderate/dashboard.twig', [
             'unapproved' => $unapproved
         ]);
     }
@@ -44,7 +49,7 @@ class ModerateController
         $stmt->execute(['id' => $data['id']]);
 
         return $response
-                ->withHeader('Location', '/moderate')
+                ->withHeader('Location', '/moderate/dashboard')
                 ->withStatus(302);
     }
 
@@ -58,7 +63,7 @@ class ModerateController
         $stmt->execute(['id' => $data['id']]);
 
         return $response
-                ->withHeader('Location', '/moderate')
+                ->withHeader('Location', '/moderate/dashboard')
                 ->withStatus(302);
     }
 }

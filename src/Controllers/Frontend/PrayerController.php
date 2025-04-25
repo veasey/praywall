@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Frontend;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -47,7 +47,7 @@ class PrayerController
         ");
         $prayers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $this->view->render($response, 'prayers.twig', [
+        return $this->view->render($response, 'frontend/prayers/view.twig', [
             'prayers' => $prayers
         ]);
     }
@@ -73,7 +73,7 @@ class PrayerController
             ]);
         }
 
-        return $this->view->render($response, 'prayer_request.twig');
+        return $this->view->render($response, 'frontend/prayers/request.twig');
     }
     public function approvePrayer(Request $request, Response $response, $args)
     {
