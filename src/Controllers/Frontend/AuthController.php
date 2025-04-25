@@ -6,6 +6,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use PDO;
 use Slim\Views\Twig;
+use App\Middleware\ErrorHandlerMiddleware;
+use Error;
 
 class AuthController
 {
@@ -26,11 +28,30 @@ class AuthController
 
     public function login(Request $request, Response $response, $args)
     {
-        // Handle the login form submission
         $data = $request->getParsedBody();
-        // Validate and authenticate user here
-        // Redirect to dashboard or show error message
-        return $response->withHeader('Location', '/')->withStatus(302);
+
+        // Replace this with real authentication
+        $email = $data['email'] ?? '';
+        $password = $data['password'] ?? '';
+    
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Dummy hash to run password_verify regardless of user presence (prevents timing attacks)
+        $dummyHash = '$2y$10$ForGodSoLovedTheWorldHeGaveHisOnlySonInEternity1n7hnbRJHxXVLeakoG8K30oukPsA.ztMG'; // a valid bcrypt hash
+        $hash = $user['password_hash'] ?? $dummyHash;
+        $passwordVerified = password_verify($password, $hash);
+
+        if ($user && $passwordVerified) {
+            // Set session or token here
+            $_SESSION['user'] = $user;
+            return $response->withHeader('Location', '/')->withStatus(302);
+        }
+
+        // failed login
+        ErrorHandlerMiddleware::addError('Invalid login credentials.');
+        return $response->withHeader('Location', '/login')->withStatus(302);
     }
 
     public function logout(Request $request, Response $response, $args)

@@ -1,16 +1,20 @@
 <?php
-// src/container.php
 use DI\ContainerBuilder;
 use Slim\Views\Twig;
 use Twig\Loader\FilesystemLoader;
+use App\Middleware\TwigGlobalsMiddleware;
 
 return (function() {
     $builder = new ContainerBuilder();
     $builder->addDefinitions([
+
         // Twig service
         Twig::class => \DI\factory(function() {
             return Twig::create(__DIR__ . '/../templates', ['cache' => false]);
         }),
+
+        // TwigGlobalsMiddleware autowire
+        TwigGlobalsMiddleware::class => \DI\autowire(),
 
         // PDO service
         PDO::class => \DI\factory(function() {

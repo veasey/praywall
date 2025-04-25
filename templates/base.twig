@@ -7,6 +7,27 @@
 </head>
 <body>
     <div class="container">
+
+        <div class="header">
+            {% if user %}
+                <p>Welcome, {{ user.name }}!</p>
+            {% else %}
+                <p><a href="/login">Login</a></p>
+            {% endif %}
+        </div>
+
+        {% for error in errors %}
+            <div class="error">
+                <p>{{ error }}</p>
+            </div>
+        {% endfor %}
+
+        {% for message in messages %}
+            <div class="error">
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+
         {% block content %}{% endblock %}
     </div>
 </body>

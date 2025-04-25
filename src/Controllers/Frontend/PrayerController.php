@@ -67,7 +67,7 @@ class PrayerController
             ]);
 
             // Render a confirmation page
-            return $this->view->render($response, 'prayer_request_success.twig', [
+            return $this->view->render($response, 'frontend/prayers/request_success.twig', [
                 'message' => 'Your prayer request has been submitted successfully!',
                 'home_url' => '/prayers'
             ]);

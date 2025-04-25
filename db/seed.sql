@@ -5,7 +5,7 @@ INSERT INTO churches (name, location) VALUES
 
 -- Test Users
 INSERT INTO users (name, email, password_hash, role) VALUES
-('Clint Rivers', 'clint@example.com', 'hashedpassword1', 'admin'),
+('Clint Rivers', 'clint@example.com', 'c11bb66099c9ecd197cdaf69415bbb9a', 'admin'),
 ('Sarah Jones', 'sarah@example.com', 'hashedpassword2', 'moderator'),
 ('Tom Lee', 'tom@example.com', 'hashedpassword3', 'user');
 
