@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>PrayWall</title>
-</head>
-<body>
+{% extends "base.twig" %}
+
+{% block title %}Prayer Request Form{% endblock %}
+
+{% block content %}
+    
   <h1>Prayer Request Form</h1>
   
   <form action="/prayers/request" method="POST">
@@ -15,6 +15,5 @@
 
     <button type="submit">Submit</button>
   </form>
-  
-</body>
-</html>
+
+{% endblock %}

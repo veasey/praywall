@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Prayer Request Submitted</title>
-</head>
-<body>
+{% extends "base.twig" %}
+
+{% block title %}Prayer Request Success{% endblock %}
+
+{% block content %}
+    
   <h1>{{ message }}</h1>
   <p><a href="{{ home_url }}">Go back to the prayer list</a></p>
-</body>
-</html>
+
+{% endblock %}
