@@ -20,20 +20,6 @@ class ErrorHandlerMiddleware
     {
         // Handle the request and get the response
         $response = $handler->handle($request);
-
-        // After the response is generated, clear the flash session data
-        if (!empty($_SESSION['_flash'])) {
-            if (!empty($_SESSION['_flash']['errors'])) {
-                unset($_SESSION['errors']);
-            }
-
-            if (!empty($_SESSION['_flash']['messages'])) {
-                unset($_SESSION['messages']);
-            }
-
-            unset($_SESSION['_flash']); // Remove the flash marker
-        }
-
         return $response;
     }
 
@@ -54,9 +40,6 @@ class ErrorHandlerMiddleware
         if (!in_array($error, $_SESSION['errors'])) {
             $_SESSION['errors'][] = $error;
         }
-
-        // Mark for flash clearing after the next request
-        $_SESSION['_flash']['errors'] = true;
     }
 
     /**
@@ -76,8 +59,5 @@ class ErrorHandlerMiddleware
         if (!in_array($message, $_SESSION['messages'])) {
             $_SESSION['messages'][] = $message;
         }
-
-        // Mark for flash clearing after the next request
-        $_SESSION['_flash']['messages'] = true;
     }
 }

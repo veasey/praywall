@@ -1,29 +1,30 @@
 <?php
 namespace App\Middleware;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Views\Twig;
 
-/**
- * Specifically for adding session and error messages to Twig globals
- */
-class TwigGlobalsMiddleware
+class TwigGlobalsMiddleware implements MiddlewareInterface
 {
-    private Twig $twig;
+    private Twig $view;
 
-    public function __construct(Twig $twig)
+    public function __construct(Twig $view)
     {
-        $this->twig = $twig;
+        $this->view = $view;
     }
 
-    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(Request $request, RequestHandler $handler): Response
     {
-        $env = $this->twig->getEnvironment();
-        $env->addGlobal('session', $_SESSION);
-        $env->addGlobal('errors', $_SESSION['errors'] ?? []);
-        $env->addGlobal('messages', $_SESSION['messages'] ?? []);
+        // Read and clear session flash errors
+        $errors = $_SESSION['errors'] ?? [];
+        $messages = $_SESSION['messages'] ?? [];
+        unset($_SESSION['errors'], $_SESSION['messages']);
+
+        $this->view->getEnvironment()->addGlobal('errors', $errors);
+        $this->view->getEnvironment()->addGlobal('messages', $messages);
 
         return $handler->handle($request);
     }
