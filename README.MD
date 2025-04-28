@@ -40,6 +40,8 @@ Once the containers are running, open a new terminal tab and run:
 docker exec -i praywall_db mysql -u root -proot praywall < db/schema.sql
 ```
 
+Locally this is made easier by a route you can visit: `localhost:8000/migrate`
+
 ---
 
 ## 📄 Project Configuration
