@@ -4,17 +4,33 @@
     <meta charset="UTF-8">
     <title>{% block title %}Prayer Wall{% endblock %}</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
-    <div class="container">
 
-        <div class="header">
-            {% if user %}
-                <p>Welcome, {{ user.name }}!</p>
-            {% else %}
-                <p><a href="/login">Login</a></p>
-            {% endif %}
+    <div class="header">
+        <div class="container">
+            
+            <!-- Menu options -->
+            <div class="header-menu">
+                {% if user %}
+                    <p>Welcome, {{ user.name }}!</p>
+                    <a href="/logout">Logout</a>
+                {% else %}
+                    <a href="/login">Login</a>
+                    <a href="/register">Register</a> <!-- example extra menu link -->
+                {% endif %}
+            </div>
+
+            <!-- Title -->
+            <a href="/" class="header-title">
+                PrayWall
+            </a>
+
         </div>
+    </div>
+
+    <div class="container">
 
         {% for error in errors %}
             <div class="error">

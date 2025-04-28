@@ -1,15 +1,18 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f9f9f9;
-    color: #333;
+    background: #f4f7fa; /* pale blue/white */
+    color: #444; /* dark slate grey */
     margin: 0;
-    padding: 2rem;
     line-height: 1.6;
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 2rem;
+}
+
+.card {
     background: white;
     padding: 2rem;
     border-radius: 12px;
@@ -18,7 +21,7 @@ body {
 
 h1, h2, h3 {
     font-weight: 600;
-    color: #444;
+    color: #555; /* slightly lighter grey */
     margin-top: 0;
 }
 
@@ -33,14 +36,14 @@ textarea {
     width: 100%;
     padding: 0.75rem;
     margin-top: 0.5rem;
-    border: 1px solid #ccc;
+    border: 1px solid #ccd6dd; /* soft blue-grey */
     border-radius: 6px;
     box-sizing: border-box;
 }
 
 button {
-    background-color: #337ab7;
-    color: white;
+    background-color: #b8c4db; /* muted silver-blue */
+    color: #333;
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 6px;
@@ -49,12 +52,12 @@ button {
 }
 
 button:hover {
-    background-color: #286090;
+    background-color: #9aa9c4; /* slightly deeper muted blue */
 }
 
 .error {
-    color: #a94442;
-    background-color: #f2dede;
+    color: #8a3c3c; /* softer muted red */
+    background-color: #fbeaea; /* very pale pinkish background */
     padding: 0.5rem;
     border-radius: 5px;
     margin-top: 1rem;
