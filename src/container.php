@@ -15,6 +15,7 @@ return (function() {
 
         // TwigGlobalsMiddleware autowire
         TwigGlobalsMiddleware::class => \DI\autowire(),
+        'view' => \DI\get(Twig::class),
 
         // PDO service
         PDO::class => \DI\factory(function() {

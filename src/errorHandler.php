@@ -1,15 +1,17 @@
 <?php
-// src/container.php
-// Redirect to error pages
+// src/errorHandler.php
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpNotFoundException;
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
+
+// 404 Error Handler
 $errorMiddleware->setErrorHandler(
     HttpNotFoundException::class,
-    function (Request $request, Throwable $exception, bool $displayErrorDetails) use ($app) {
+    function (Request $request, Throwable $exception, bool $displayErrorDetails) use ($app): Response {
         $response = $app->getResponseFactory()->createResponse();
-        $response->getBody()->write('<h1>Page Not Found</h1><p>The page you are looking for does not exist.</p>');
-        return $response->withStatus(404);
+        $view = $app->getContainer()->get('view');
+        return $view->render($response->withStatus(404), 'errors/404.twig');
     }
 );
