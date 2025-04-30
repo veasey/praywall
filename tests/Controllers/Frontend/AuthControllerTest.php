@@ -35,6 +35,14 @@ class AuthControllerTest extends TestCase
         $this->assertSame($renderedResponse, $result);
     }
 
+    public function testPasswordVerificationPasses()
+    {
+        $plainPassword = 'hashedpassword1';
+        $hashedPassword = password_hash($plainPassword, PASSWORD_BCRYPT);
+
+        $this->assertTrue(password_verify('hashedpassword1', $hashedPassword));
+    }
+
     public function testLoginWithValidCredentials()
     {
         $_SESSION = []; // Needed for session manipulation
@@ -44,8 +52,8 @@ class AuthControllerTest extends TestCase
         $stmt = $this->createMock(PDOStatement::class);
         $newResponse = $this->createMock(ResponseInterface::class);
 
-        $email = 'user@example.com';
-        $password = 'password123';
+        $email = 'claaint@example.com';
+        $password = 'hashedpassword1';
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $user = ['email' => $email, 'password_hash' => $hashedPassword];
 
@@ -110,4 +118,44 @@ class AuthControllerTest extends TestCase
         $result = $this->controller->logout($request, $response, []);
         $this->assertSame($newResponse, $result);
     }
+
+    // Test with real database connection (integration test)
+    public function testLoginWithRealDbUser()
+    {
+        $this->db = new PDO('sqlite::memory:');
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->db->exec("
+            CREATE TABLE users (
+                id INTEGER PRIMARY KEY,
+                email TEXT NOT NULL,
+                password_hash TEXT NOT NULL
+            );
+        ");
+
+        $email = 'test@example.com';
+        $plainPassword = 'test123';
+        $hashedPassword = password_hash($plainPassword, PASSWORD_BCRYPT);
+
+        $stmt = $this->db->prepare("INSERT INTO users (email, password_hash) VALUES (:email, :password_hash)");
+        $stmt->execute([':email' => $email, ':password_hash' => $hashedPassword]);
+
+        $twig = $this->createMock(Twig::class);
+        $controller = new \App\Controllers\Frontend\AuthController($twig, $this->db);
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getParsedBody')->willReturn([
+            'email' => $email,
+            'password' => $plainPassword
+        ]);
+
+        $response = new \Slim\Psr7\Response();
+        $_SESSION = [];
+
+        $response = $controller->login($request, $response, []);
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertArrayHasKey('user', $_SESSION);
+        $this->assertEquals($email, $_SESSION['user']['email']);
+    }
+
 }
