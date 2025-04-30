@@ -4,10 +4,11 @@ INSERT INTO churches (name, location) VALUES
 ('Grace Chapel', 'Durham');
 
 -- Test Users
-INSERT INTO users (name, email, password_hash, role) VALUES
-('Clint Rivers', 'clint@example.com', 'c11bb66099c9ecd197cdaf69415bbb9a', 'admin'),
-('Sarah Jones', 'sarah@example.com', 'hashedpassword2', 'moderator'),
-('Tom Lee', 'tom@example.com', 'hashedpassword3', 'user');
+INSERT INTO users (name, email, password_hash, role) 
+VALUES ('Clint Rivers', 'clint@example.com', '$2a$12$A7SL6IWxw9omdNLeHluir.fG78NWgjIqjc0COdbRp4t7uOI8M2BLK', 'user'),
+('Sarah Jones', 'sarah@example.com', '$2a$12$wnrsxXINFQ.bxX7eIskCGePFs.hP73UyAiCHt3IY4Ga1QOtRmEnVq', 'moderator'),
+('Tom Lee', 'tom@example.com', '$2a$12$tX1Ngq3BBKuJa2bOErzxPOtvOuFmSOy9/MfvLP8xwntUK3kAxRv0y', 'admin');
+
 
 -- Test Prayers
 INSERT INTO prayers (user_id, church_id, title, body, approved) VALUES
