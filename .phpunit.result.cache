@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"AuthControllerTest::testShowLoginForm":0.011,"AuthControllerTest::testLoginWithValidCredentials":0.095,"AuthControllerTest::testLoginWithInvalidCredentials":0.048,"AuthControllerTest::testLogout":0}}

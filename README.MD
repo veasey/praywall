@@ -4,11 +4,11 @@ A lightweight microSaaS application for churches to host an online Prayer Reques
 ## 📦 Features
 Post prayer requests or praise reports (with optional anonymity)
 
-- JSON API for fetching prayers
-- Embeddable HTML prayer wall via iframe
+- JSON API for fetching prayers (coming soon)
+- Embeddable HTML prayer wall via iframe (coming soon)
 - Lightweight Slim routing with clean, maintainable code
 - Facebook login integration-ready (coming soon)
-- Simple moderation system (planned)
+- Simple moderation system
 
 ---
 
