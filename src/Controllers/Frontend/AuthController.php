@@ -45,7 +45,13 @@ class AuthController
 
         if ($user && $passwordVerified) {
             // Set session or token here
-            $_SESSION['user'] = $user;
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'email' => $user['email'],
+                'name' => $user['name'],
+                'role' => $user['role']
+            ];
+            $_SESSION['messages'] = ['Login successful!'];
             return $response->withHeader('Location', '/')->withStatus(302);
         }
 
