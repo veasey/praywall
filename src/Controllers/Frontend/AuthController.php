@@ -2,12 +2,13 @@
 
 namespace App\Controllers\Frontend;
 
+use App\Validation\RegisterValidator;
+use App\Validation\LoginValidator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use PDO;
 use Slim\Views\Twig;
 use App\Middleware\ErrorHandlerMiddleware;
-use Error;
 
 class AuthController
 {
@@ -26,13 +27,24 @@ class AuthController
         return $this->view->render($response, 'frontend/auth/login.twig');
     }
 
+    public function showRegisterForm(Request $request, Response $response, $args)
+    {
+        return $this->view->render($response, 'frontend/auth/register.twig');
+    }
+
     public function login(Request $request, Response $response, $args)
     {
         $data = $request->getParsedBody();
-
-        // Replace this with real authentication
         $email = $data['email'] ?? '';
         $password = $data['password'] ?? '';
+
+        $errors = LoginValidator::validate($data);
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                ErrorHandlerMiddleware::addError($error);
+            }
+            return $response->withHeader('Location', '/login')->withStatus(302);
+        }
     
         $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->execute([':email' => $email]);
@@ -64,5 +76,25 @@ class AuthController
     {
         $_SESSION['user'] = null;
         return $response->withHeader('Location', '/')->withStatus(302);
+    }
+
+    public function register(Request $request, Response $response): Response {
+        $data = $request->getParsedBody();
+
+        $errors = RegisterValidator::validate($data);
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                ErrorHandlerMiddleware::addError($error);
+            }
+            return $response->withHeader('Location', '/register')->withStatus(302);
+        }
+
+        // hash password & insert user
+        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
+        $stmt = $this->db->prepare('INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)');
+        $stmt->execute([$data['name'], $data['email'], $hash, 'user']);
+
+        ErrorHandlerMiddleware::addMessage('Registration successful. You may now log in.');
+        return $response->withHeader('Location', '/login')->withStatus(302);
     }
 }
