@@ -19,7 +19,7 @@ class RegisterValidator {
             $errors[] = "Password must be at least 6 characters.";
         }
 
-        if (($data['password'] ?? '') !== ($data['confirm'] ?? '')) {
+        if (($data['password'] ?? '') !== ($data['password_confirm'] ?? '')) {
             $errors[] = "Passwords do not match.";
         }
 
