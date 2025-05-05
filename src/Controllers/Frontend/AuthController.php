@@ -56,8 +56,7 @@ class AuthController
 
     public function logout(Request $request, Response $response, $args)
     {
-        // Handle the logout action
-        // Clear session or token here
+        $_SESSION['user'] = null;
         return $response->withHeader('Location', '/')->withStatus(302);
     }
 }
