@@ -19,5 +19,7 @@ return function (App $app) {
     // Logon Form
     $app->get('/login', [AuthController::class, 'showLoginForm']);
     $app->post('/login', [AuthController::class, 'login']);
+    $app->get('/register', [AuthController::class, 'showRegisterForm']);
+    $app->post('/register', [AuthController::class, 'register']);
     $app->get('/logout', [AuthController::class, 'logout']);
 };

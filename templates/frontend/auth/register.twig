@@ -1,0 +1,42 @@
+{% extends "base.twig" %}
+
+{% block title %}Register | Prayer Wall{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="text-center mb-4">🕊️ Create Your Account</h2>
+
+    <div class="text-center text-muted mb-4">
+        <em>“Come to me, all who are weary and burdened, and I will give you rest.”</em><br>
+        <small>— Matthew 11:28</small>
+    </div>
+
+    <form method="post" action="/register">
+        <div class="form-group mb-3">
+            <label for="name">Full Name</label>
+            <input type="text" name="name" id="name" value="{{ session.old.name ?? '' }}" required class="form-control" placeholder="Your full name">
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="email">Email Address</label>
+            <input type="email" name="email" id="email" value="{{ session.old.email ?? '' }}" required class="form-control" placeholder="you@example.com">
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required class="form-control" placeholder="Choose a strong password">
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="password_confirm">Confirm Password</label>
+            <input type="password" name="password_confirm" id="password_confirm" required class="form-control" placeholder="Re-enter password">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+
+    <p class="text-center mt-3">
+        Already have an account? <a href="/login">Sign in</a>
+    </p>
+</div>
+{% endblock %}
