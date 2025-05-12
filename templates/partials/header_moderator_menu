@@ -1,0 +1,10 @@
+{% if user.role != 'user' %}
+<div class="moderator-menu">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/users">Users</a>
+    <a href="/posts">Posts</a>
+    <a href="/comments">Comments</a>
+    <a href="/reports">Reports</a>
+    <a href="/settings">Settings</a>
+</div>
+{% endif %}

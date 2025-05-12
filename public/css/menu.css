@@ -51,3 +51,24 @@
 .dropdown-content a:hover {
     text-decoration: underline;
 }
+
+/* Moderator Menu Styles */
+.moderator-menu {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.moderator-menu a {
+    padding: 0 1rem;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+
+.moderator-menu a:hover {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
