@@ -1,14 +1,17 @@
 {% if user %}
+
+    <div class="user-details">
+        <span>Welcome, {{ user.name }}</span>
+        {% if user.role != 'user' %}
+            <br /><small>Role: <b>{{ user.role |capitalize }}</b></small>
+        {% endif %}
+    </div>
+
     <div class="profile-dropdown">
         <button class="profile-button">
             👤
         </button>
         <div class="dropdown-content">
-            <span>Welcome, {{ user.name }}</span>
-            {% if user.role != 'user' %}
-                <small>Role: {{ user.role }}</small>
-            {% endif %}
-            <hr>
             <a href="/logout">Logout</a>
         </div>
     </div>
