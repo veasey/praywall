@@ -62,3 +62,10 @@ button:hover {
     border-radius: 5px;
     margin-top: 1rem;
 }
+
+/* moderator menu styles */
+.request-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}

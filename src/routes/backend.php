@@ -8,7 +8,7 @@ use Slim\App;
 return function (App $app) {
 
     $app->group('/moderate', function ($group)  {
-        $group->get('/dashboard', [ModeraterDashboardController::class, 'dashboard']);
+        $group->get('/requests', [ModeraterDashboardController::class, 'dashboard']);
         $group->post('/approve', [ModeraterDashboardController::class, 'approvePrayer']);
         $group->post('/deny', [ModeraterDashboardController::class, 'denyPrayer']);
     })->add(new AuthMiddleware());

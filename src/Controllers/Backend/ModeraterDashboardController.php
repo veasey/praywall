@@ -33,7 +33,7 @@ class ModeraterDashboardController
         ");
         $unapproved = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $this->view->render($response, 'backend/moderate/dashboard.twig', [
+        return $this->view->render($response, 'backend/moderate/requests.twig', [
             'unapproved' => $unapproved
         ]);
     }

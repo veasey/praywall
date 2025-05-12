@@ -1,0 +1,29 @@
+{% extends "base.twig" %}
+
+{% block title %}Moderator Dashboard{% endblock %}
+
+{% block content %}
+
+    <h1>Unapproved Prayers</h1>
+
+    {% for prayer in unapproved %}
+        <div>
+            <p><strong>{{ prayer.title }}</strong></p>
+            <p>{{ prayer.body }}</p>
+            
+            <div class="request-buttons">
+                <form method="post" action="/moderate/approve">
+                    <input type="hidden" name="id" value="{{ prayer.id }}">
+                    <button>Approve</button>
+                </form>
+                <form method="post" action="/moderate/deny">
+                    <input type="hidden" name="id" value="{{ prayer.id }}">
+                    <button>Deny</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <p>No prayers yet.</p>
+    {% endfor %}
+    
+{% endblock %}
