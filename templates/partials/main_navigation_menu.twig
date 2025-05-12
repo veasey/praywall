@@ -1,0 +1,25 @@
+{% if user %}
+    <div class="profile-dropdown">
+        <button class="profile-button">
+            👤
+        </button>
+        <div class="dropdown-content">
+            <span>Welcome, {{ user.name }}</span>
+            {% if user.role != 'user' %}
+                <small>Role: {{ user.role }}</small>
+            {% endif %}
+            <hr>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+{% else %}
+    <div class="profile-dropdown">
+        <button class="profile-button">
+            👤
+        </button>
+        <div class="dropdown-content">
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </div>
+{% endif %}

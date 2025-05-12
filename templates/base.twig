@@ -5,21 +5,15 @@
     <title>{% block title %}Prayer Wall{% endblock %}</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/menu.css">
 </head>
 <body>
 
     <div class="header">
         <div class="container">
             
-            <!-- Menu options -->
-            <div class="header-menu">
-                {% if user %}
-                    <p>Welcome, {{ user.name }}!</p>
-                    <a href="/logout">Logout</a>
-                {% else %}
-                    <a href="/login">Login</a>
-                    <a href="/register">Register</a> <!-- example extra menu link -->
-                {% endif %}
+            <div class="menu">
+                {{ include('partials/main_navigation_menu.twig') }}
             </div>
 
             <!-- Title -->
