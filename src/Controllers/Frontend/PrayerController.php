@@ -57,18 +57,36 @@ class PrayerController
         // Handle the prayer request form submission
         if ($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
+
+            // Default: not approved
+            $approved = false;
+
+            // Check if user is moderator or admin
+            if (isset($_SESSION['user']) && isset($_SESSION['user']['role'])) {
+                $role = $_SESSION['user']['role'];
+                if ($role === 'admin' || $role === 'moderator') {
+                    $approved = true;
+                }
+            }
+
             $stmt = $this->db->prepare("
-                INSERT INTO prayers (title, body, date_posted) 
-                VALUES (:title, :body, NOW())
+                INSERT INTO prayers (title, body, date_posted, approved) 
+                VALUES (:title, :body, NOW(), :approved)
             ");
             $stmt->execute([
-                ':title'          => $data['title'],
-                ':body' => $data['body']
+                ':title'    => $data['title'],
+                ':body'     => $data['body'],
+                ':approved' => $approved ? 1 : 0
             ]);
+
+            $message = 'Your prayer request has been submitted.';
+            if ($approved) {
+                $message = 'Your prayer request has been self approved and submitted.';
+            }
 
             // Render a confirmation page
             return $this->view->render($response, 'frontend/prayers/request_success.twig', [
-                'message' => 'Your prayer request has been submitted successfully!',
+                'message' => 'Your prayer request has been submitted.',
                 'home_url' => '/prayers'
             ]);
         }
