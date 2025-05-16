@@ -51,7 +51,7 @@ class ModeraterDashboardController
         $stmt->execute(['id' => $data['id']]);
 
         return $response
-                ->withHeader('Location', '/moderate/dashboard')
+                ->withHeader('Location', '/moderate/requests')
                 ->withStatus(302);
     }
 
@@ -65,7 +65,7 @@ class ModeraterDashboardController
         $stmt->execute(['id' => $data['id']]);
 
         return $response
-                ->withHeader('Location', '/moderate/dashboard')
+                ->withHeader('Location', '/moderate/requests')
                 ->withStatus(302);
     }
 }
