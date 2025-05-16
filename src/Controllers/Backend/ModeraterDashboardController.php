@@ -3,6 +3,7 @@ namespace App\Controllers\Backend;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
 use PDO;
 use Slim\Views\Twig;
 
@@ -10,6 +11,7 @@ use Slim\Views\Twig;
  * Summary of ModeraterDashboardController
  * - approves or denies prayer requests
  * - displays unapproved prayer requests
+ * "And let us consider how we may spur one another on toward love and good deeds." - Hebrews 10:24
  */
 class ModeraterDashboardController
 {
