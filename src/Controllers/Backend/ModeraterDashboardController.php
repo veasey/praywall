@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use PDO;
 use Slim\Views\Twig;
+use App\Middleware\ErrorHandlerMiddleware;
 
 /**
  * Summary of ModeraterDashboardController
@@ -49,6 +50,24 @@ class ModeraterDashboardController
             WHERE id = :id
         ");
         $stmt->execute(['id' => $data['id']]);
+
+        ErrorHandlerMiddleware::addMessage('Prayer request approved.');
+
+        return $response
+                ->withHeader('Location', '/moderate/requests')
+                ->withStatus(302);
+    }
+
+    public function unapprovePrayer(Request $request, Response $response, $args)
+    { 
+        $stmt = $this->db->prepare("
+            UPDATE prayers 
+            SET approved = FALSE 
+            WHERE id = :id
+        ");
+        $stmt->execute(['id' => $args['id']]);
+
+        ErrorHandlerMiddleware::addMessage('Prayer request unapproved.');
 
         return $response
                 ->withHeader('Location', '/moderate/requests')

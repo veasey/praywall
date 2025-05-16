@@ -1,7 +1,7 @@
 {% if user and user.role != 'user' %}
 <div class="moderator-menu">
     <div class="moderator-menu-container">
-        <a href="/moderate/requests">Dashboard</a>
+        <a href="/moderate/requests">Prayer Requests</a>
         <a href="/settings">Settings</a>
         {% if user.role == 'admin' %}
             <a href="/users">Users</a>

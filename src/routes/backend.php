@@ -11,6 +11,7 @@ return function (App $app) {
         $group->get('/requests', [ModeraterDashboardController::class, 'dashboard']);
         $group->post('/approve', [ModeraterDashboardController::class, 'approvePrayer']);
         $group->post('/deny', [ModeraterDashboardController::class, 'denyPrayer']);
+        $group->get('/unapprove/{id}', [ModeraterDashboardController::class, 'unapprovePrayer']); // Unapprove a prayer request from frontend
     })->add(new AuthMiddleware());
 
     $app->group('/admin', function ($group)  {

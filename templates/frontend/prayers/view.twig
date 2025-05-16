@@ -6,9 +6,15 @@
 
   {% for prayer in prayers %}
     <div class="card">
+
+      <div class="prayer-button">
+        <a href="/moderate/unapprove/{{prayer.id}}">Unapprove</a>
+      </div>
+
       <h2>{{ prayer.title }}</h2>
       <p>{{ prayer.body }}</p>
       <small>Posted: {{ prayer.date_posted }}</small>
+
     </div>
   {% else %}
     <p>No prayers yet.</p>
