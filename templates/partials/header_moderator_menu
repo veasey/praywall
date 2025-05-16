@@ -1,4 +1,4 @@
-{% if user.role != 'user' %}
+{% if user and user.role != 'user' %}
 <div class="moderator-menu">
     <a href="/moderate/requests">Dashboard</a>
     <a href="/settings">Settings</a>
