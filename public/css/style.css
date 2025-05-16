@@ -11,12 +11,13 @@ body {
     padding: 2rem;
 }
 
-.card {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.05);
-    margin-bottom: 1rem;
+.prayer-card {
+  position: relative;
+  padding: 1.5rem;
+  border: 1px solid #4a2e61;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 h1, h2, h3 {
@@ -63,9 +64,24 @@ button:hover {
     margin-top: 1rem;
 }
 
-/* moderator menu styles */
-.request-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+.alert {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Error messages */
+.alert-error {
+  background-color: #5a0f25; /* Deep rose red */
+  color: #ffeef0; /* Light dusty pink */
+  border: 1px solid #8b1e3f;
+}
+
+/* Info / general messages */
+.alert-info {
+  background-color: #2e1f3d; /* Deep purple */
+  color: #f0e9d8; /* Soft gold/ivory */
+  border: 1px solid #6e4c7b;
 }

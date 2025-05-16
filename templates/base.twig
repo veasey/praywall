@@ -31,21 +31,13 @@
 
     <div class="container">
 
-        {% if errors is defined and errors %}
-            {% for error in errors %}
-                <div class="error">
-                    <p>{{ error }}</p>
-                </div>
-            {% endfor %}
-        {% endif %}
+        {% for error in errors %}
+            <div class="alert alert-error">{{ error }}</div>
+        {% endfor %}
 
-        {% if messages is defined and messages %}
-            {% for message in messages %}
-                <div class="message">
-                    <p>{{ message }}</p>
-                </div>
-            {% endfor %}
-        {% endif %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
 
         {% block content %}{% endblock %}
     </div>

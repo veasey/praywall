@@ -5,11 +5,13 @@
   <h1>Prayers</h1>
 
   {% for prayer in prayers %}
-    <div class="card">
+    <div class="prayer-card">
 
-      <div class="prayer-button">
-        <a href="/moderate/unapprove/{{prayer.id}}">Unapprove</a>
-      </div>
+      {% if user and user.role != 'user' %}
+        <div class="unapprove-button">
+          <a href="/moderate/unapprove/{{prayer.id}}">Unapprove</a>
+        </div>
+      {% endif %}
 
       <h2>{{ prayer.title }}</h2>
       <p>{{ prayer.body }}</p>
