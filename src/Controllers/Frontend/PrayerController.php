@@ -44,24 +44,23 @@ class PrayerController
     {
         $params = $request->getQueryParams();
         $page = max(1, (int)($params['page'] ?? 1));
-        $pageSize = 10;
+        $pageSize = max(1, min(100, (int)($params['limit'] ?? 10)));
         $offset = ($page - 1) * $pageSize;
 
         $userId = $_SESSION['user']['id'] ?? 0;
         $order = in_array(strtolower($params['order'] ?? ''), ['asc', 'desc']) ? strtolower($params['order']) : 'desc';
-        $pageSize = max(1, min(100, (int)($params['limit'] ?? 10)));
 
         $totalPrayers = $this->prayerRepository->getTotalApprovedPrayersCount();
         $prayers = $this->prayerRepository->getApprovedPrayersWithPrayedCount($userId, $pageSize, $offset, order: $order);
         $totalPages = (int) ceil($totalPrayers / $pageSize);
-        
+
 
         return $this->view->render($response, 'frontend/prayers/view.twig', [
             'prayers' => $prayers,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'order' => $order,
-            'limit' => $pageSize,
+            'limit' => $pageSize
         ]);
     }
 
@@ -132,16 +131,21 @@ class PrayerController
 
         $userId = $user['id'];
         $prayerId = $args['id'];
+        $pageSize = max(1, min(100, (int)($request->getQueryParams()['limit'] ?? 10)));
 
         $this->prayerRepository->togglePrayed($userId, $prayerId);
         
         // get redirect query param
-        $queryParams = $request->getQueryParams();
-        $redirectPage = $queryParams['redirect'] ?? 1;
+        $queryParams = http_build_query([
+            'redirect' => $request->getQueryParams()['redirect'] ?? 1,
+            'limit'    => $pageSize,
+            'page'     => $request->getQueryParams()['page'] ?? 1,
+            'order'    => $request->getQueryParams()['order'] ?? 'desc'
+        ]);
 
         // redirect back to prayers page with anchor and page param
         return $response
-            ->withHeader('Location', "/prayers?page={$redirectPage}#prayer-{$prayerId}")
+            ->withHeader('Location', "/prayers?" . $queryParams . "#prayer-$prayerId")
             ->withStatus(302);
     }
 }
