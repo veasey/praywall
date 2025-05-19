@@ -3,8 +3,9 @@ namespace App\Controllers\Frontend;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use PDO;
+use App\Repositories\PrayerRepository;
 use Slim\Views\Twig;
+use PDO;
 
 class PrayerController
 {
@@ -28,43 +29,34 @@ class PrayerController
            \       \*/
 
     private TWIG $view;
-    private PDO  $db;
+    private PrayerRepository $prayerRepository;
 
     // Constructor that injects the Twig view service
     public function __construct(Twig $view, PDO $db)
     {
         $this->view = $view;
-        $this->db   = $db;
+        $this->prayerRepository = new PrayerRepository($db);
     }
 
     public function listPrayers(Request $request, Response $response, $args)
     {
-        $userId = $_SESSION['user']['id'] ?? null;
+        $params = $request->getQueryParams();
+        $page = max(1, (int)($params['page'] ?? 1));
+        $pageSize = 10;
+        $offset = ($page - 1) * $pageSize;
 
-        $stmt = $this->db->prepare("
-            SELECT 
-                p.*,
-                COUNT(DISTINCT up.user_id) AS prayed_count,
-                EXISTS (
-                    SELECT 1 
-                    FROM user_prayers up2 
-                    WHERE up2.prayer_id = p.id AND up2.user_id = :user_id
-                ) AS has_prayed
-            FROM prayers p
-            LEFT JOIN user_prayers up ON p.id = up.prayer_id
-            WHERE p.approved = TRUE
-            GROUP BY p.id
-            ORDER BY p.date_posted DESC
-        ");
+        $userId = $_SESSION['user']['id'] ?? 0;
 
-        $stmt->execute(['user_id' => $userId]);
-        $prayers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $totalPrayers = $this->prayerRepository->getTotalApprovedPrayersCount();
+        $prayers = $this->prayerRepository->getApprovedPrayersWithPrayedCount($userId, $pageSize, $offset);
+        $totalPages = (int) ceil($totalPrayers / $pageSize);
 
         return $this->view->render($response, 'frontend/prayers/view.twig', [
-            'prayers' => $prayers
+            'prayers' => $prayers,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
-
 
     public function prayerRequest(Request $request, Response $response, $args)
     {
@@ -83,15 +75,11 @@ class PrayerController
                 }
             }
 
-            $stmt = $this->db->prepare("
-                INSERT INTO prayers (title, body, date_posted, approved) 
-                VALUES (:title, :body, NOW(), :approved)
-            ");
-            $stmt->execute([
-                ':title'    => $data['title'],
-                ':body'     => $data['body'],
-                ':approved' => $approved ? 1 : 0
-            ]);
+            $this->prayerRepository->insertPrayerRequest(
+                $data['title'],
+                $data['description'],
+                $_SESSION['user']['id']
+            );
 
             $message = 'Your prayer request has been submitted.';
             if ($approved) {
@@ -109,16 +97,8 @@ class PrayerController
     }
     public function approvePrayer(Request $request, Response $response, $args)
     {
-        // Handle the prayer approval
-        $stmt = $this->db->prepare("
-            UPDATE prayers 
-            SET approved = TRUE 
-            WHERE id = :id
-        ");
-        $stmt->execute([
-            ':id' => $args['id']
-        ]);
-
+        $this->prayerRepository->approvePrayerRequest($args['id']);
+        // Redirect to the prayers list
         return $response
                 ->withHeader('Location', '/prayers')
                 ->withStatus(302);
@@ -126,15 +106,8 @@ class PrayerController
 
     public function deletePrayer(Request $request, Response $response, $args)
     {
-        // Handle the prayer deletion
-        $stmt = $this->db->prepare("
-            DELETE FROM prayers 
-            WHERE id = :id
-        ");
-        $stmt->execute([
-            ':id' => $args['id']
-        ]);
-
+        $this->prayerRepository->deletePrayerRequest($args['id']);
+        // Redirect to the prayers list
         return $response
                 ->withHeader('Location', '/prayers')
                 ->withStatus(302);
@@ -153,35 +126,7 @@ class PrayerController
         $userId = $user['id'];
         $prayerId = $args['id'];
 
-        // Check if user already prayed
-        $stmt = $this->db->prepare("
-            SELECT 1 FROM user_prayers 
-            WHERE user_id = :user_id AND prayer_id = :prayer_id
-        ");
-        $stmt->execute([
-            ':user_id' => $userId,
-            ':prayer_id' => $prayerId
-        ]);
-
-        if ($stmt->fetch()) {
-            // User already prayed — remove it
-            $this->db->prepare("
-                DELETE FROM user_prayers 
-                WHERE user_id = :user_id AND prayer_id = :prayer_id
-            ")->execute([
-                ':user_id' => $userId,
-                ':prayer_id' => $prayerId
-            ]);
-        } else {
-            // Add the prayer
-            $this->db->prepare("
-                INSERT INTO user_prayers (user_id, prayer_id) 
-                VALUES (:user_id, :prayer_id)
-            ")->execute([
-                ':user_id' => $userId,
-                ':prayer_id' => $prayerId
-            ]);
-        }
+        $this->prayerRepository->togglePrayed($userId, $prayerId);
 
         return $response
             ->withHeader('Location', '/prayers')
