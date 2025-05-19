@@ -8,10 +8,10 @@ use Slim\App;
 return function (App $app) {
 
     $app->group('/moderate', function ($group)  {
-        $group->get('/requests', [ModeraterDashboardController::class, 'dashboard']);
+        $group->get('/requests', [ModeraterDashboardController::class, 'showDashboard']);
+        $group->get('/settings', [ModeraterDashboardController::class, 'showSettings']);
         $group->post('/approve', [ModeraterDashboardController::class, 'approvePrayer']);
-        $group->post('/deny', [ModeraterDashboardController::class, 'denyPrayer']);
-        $group->get('/unapprove/{id}', [ModeraterDashboardController::class, 'unapprovePrayer']); // Unapprove a prayer request from frontend
+        $group->post('/deny', [ModeraterDashboardController::class, 'denyPrayer']);        
     })->add(new AuthMiddleware());
 
     $app->group('/admin', function ($group)  {

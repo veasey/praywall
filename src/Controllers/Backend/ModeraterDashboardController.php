@@ -26,7 +26,7 @@ class ModeraterDashboardController
         $this->db   = $db;
     }
 
-    public function dashboard(Request $request, Response $response, $args)
+    public function showDashboard(Request $request, Response $response, $args)
     {
         $stmt = $this->db->query("
             SELECT * 
@@ -86,5 +86,10 @@ class ModeraterDashboardController
         return $response
                 ->withHeader('Location', '/moderate/requests')
                 ->withStatus(302);
+    }
+
+    public function showSettings(Request $request, Response $response, $args)
+    {
+        return $this->view->render($response, 'backend/moderate/settings.twig');
     }
 }

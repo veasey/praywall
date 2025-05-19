@@ -3,6 +3,7 @@
 use App\Middleware\AuthMiddleware;
 use App\Controllers\Frontend\PrayerController;
 use App\Controllers\Frontend\AuthController;
+use App\Controllers\Backend\ModeraterDashboardController;
 use Slim\App;
 
 return function (App $app) {
@@ -22,4 +23,7 @@ return function (App $app) {
     $app->get('/register', [AuthController::class, 'showRegisterForm']);
     $app->post('/register', [AuthController::class, 'register']);
     $app->get('/logout', [AuthController::class, 'logout']);
+
+    // moderator controls
+    $app->get('/moderate/unapprove/{id}', [ModeraterDashboardController::class, 'unapprovePrayer']); // Unapprove a prayer request from frontend
 };
