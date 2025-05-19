@@ -49,3 +49,9 @@ CREATE TABLE IF NOT EXISTS praises (
     FOREIGN KEY (prayer_id) REFERENCES prayers(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
+
+CREATE TABLE user_prayers (
+    user_id INT NOT NULL,
+    prayer_id INT NOT NULL,
+    PRIMARY KEY (user_id, prayer_id)
+);

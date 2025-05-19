@@ -20,20 +20,49 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.prayer-card .date {
+.prayer-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prayer-card-footer .date {
   font-size: 0.8rem;
   color: #888; /* soft grey */
   text-align: right;
+}
+
+.pray-button {
+  background-color: #f0f4f8;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: #333;
+}
+
+.pray-button.not-prayed:hover {
+  background-color: #d1e7fd;
+  border-color: #70a1ff;
+}
+
+.pray-button.prayed {
+  background-color: #cde7d8;  /* light sage green */
+  color: #2f4f34;             /* dark greenish text */
+  border-color: #a3c4a1;      /* muted green border */
+  cursor: pointer;
+}
+
+.pray-button.prayed:hover {
+  background-color: #b5d2c1;  /* slightly darker on hover */
 }
 
 h1, h2, h3 {
     font-weight: 600;
     color: #555; /* slightly lighter grey */
     margin-top: 0;
-}
-
-form {
-    margin-top: 2rem;
 }
 
 input[type="text"],

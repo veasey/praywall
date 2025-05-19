@@ -15,7 +15,26 @@
 
       <h2>{{ prayer.title }}</h2>
       <p>{{ prayer.body }}</p>
-      <p class="date">{{ prayer.date_posted|date("F jS \\a\\t g:ia")  }}</p>
+
+      <div class="prayer-card-footer">
+        <form method="post" action="/prayers/pray/{{ prayer.id }}" class="pray-form">
+          <button 
+            type="submit" 
+            class="pray-button {% if prayer.has_prayed %}prayed{% else %}not-prayed{% endif %}"
+          >
+            🙏 
+            {% if prayer.has_prayed %}
+              You prayed ({{ prayer.prayed_count }})
+            {% else %}
+              Pray ({{ prayer.prayed_count > 0 ? prayer.prayed_count : '0' }})
+            {% endif %}
+          </button>
+        </form>
+
+        <p class="date">
+          {{ prayer.date_posted|date("F jS \\a\\t g:ia")  }}
+        </p>
+      </div>
 
     </div>
   {% else %}
