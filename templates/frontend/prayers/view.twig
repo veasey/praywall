@@ -15,7 +15,7 @@
 
       <h2>{{ prayer.title }}</h2>
       <p>{{ prayer.body }}</p>
-      <small>Posted: {{ prayer.date_posted }}</small>
+      <p class="date">{{ prayer.date_posted|date("F jS \\a\\t g:ia")  }}</p>
 
     </div>
   {% else %}
