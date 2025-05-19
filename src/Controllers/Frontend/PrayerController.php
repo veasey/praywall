@@ -9,7 +9,6 @@ use PDO;
 
 class PrayerController
 {
-
     /*      _
           _|_|_
         ,|_| |_|_
