@@ -48,15 +48,20 @@ class PrayerController
         $offset = ($page - 1) * $pageSize;
 
         $userId = $_SESSION['user']['id'] ?? 0;
+        $order = in_array(strtolower($params['order'] ?? ''), ['asc', 'desc']) ? strtolower($params['order']) : 'desc';
+        $pageSize = max(1, min(100, (int)($params['limit'] ?? 10)));
 
         $totalPrayers = $this->prayerRepository->getTotalApprovedPrayersCount();
-        $prayers = $this->prayerRepository->getApprovedPrayersWithPrayedCount($userId, $pageSize, $offset);
+        $prayers = $this->prayerRepository->getApprovedPrayersWithPrayedCount($userId, $pageSize, $offset, order: $order);
         $totalPages = (int) ceil($totalPrayers / $pageSize);
+        
 
         return $this->view->render($response, 'frontend/prayers/view.twig', [
             'prayers' => $prayers,
             'currentPage' => $page,
             'totalPages' => $totalPages,
+            'order' => $order,
+            'limit' => $pageSize,
         ]);
     }
 

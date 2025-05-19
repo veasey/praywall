@@ -120,3 +120,70 @@ button:hover {
   color: #f0e9d8; /* Soft gold/ivory */
   border: 1px solid #6e4c7b;
 }
+
+/* pagination controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0 1rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.pagination-controls a {
+  padding: 0.4rem 0.75rem;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  color: #444;
+  text-decoration: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pagination-controls a:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-controls span {
+  font-weight: 500;
+  color: #666;
+}
+
+.pagination-options {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.pagination-options label {
+  font-weight: 500;
+}
+
+.pagination-options select {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.pagination-options select:focus {
+  outline: none;
+  border-color: #999;
+}
+
+@media (max-width: 600px) {
+  .pagination-controls,
+  .pagination-options {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

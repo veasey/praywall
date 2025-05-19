@@ -11,7 +11,7 @@ class PrayerRepository
         $this->db = $db;
     }
 
-    public function getApprovedPrayersWithPrayedCount(int $userId, int $limit, int $offset): array
+    public function getApprovedPrayersWithPrayedCount(int $userId, int $limit, int $offset, string $order): array
     {
         $stmt = $this->db->prepare("
              SELECT 
@@ -26,12 +26,20 @@ class PrayerRepository
             LEFT JOIN user_prayers up ON p.id = up.prayer_id
             WHERE p.approved = TRUE
             GROUP BY p.id
-            ORDER BY p.date_posted DESC
+            ORDER BY :order
             LIMIT :limit OFFSET :offset            
         ");
+
+        $order = match ($order) {
+            'asc' => 'p.created_at ASC',
+            'desc' => 'p.created_at DESC',
+            default => 'p.created_at DESC'
+        };
+
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':order', $order, PDO::PARAM_STR);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
