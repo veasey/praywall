@@ -5,7 +5,7 @@
   <h1>Prayers</h1>
 
   {% for prayer in prayers %}
-    <div class="prayer-card">
+    <div class="prayer-card" id="prayer-{{ prayer.id }}">
 
       {% if user and user.role != 'user' %}
         <div class="unapprove-button">
@@ -17,7 +17,7 @@
       <p>{{ prayer.body }}</p>
 
       <div class="prayer-card-footer">
-        <form method="post" action="/prayers/pray/{{ prayer.id }}" class="pray-form">
+        <form method="post" action="/prayers/pray/{{ prayer.id }}?redirect={{ currentPage }}#prayer-{{ prayer.id }}" class="pray-form">
           <button 
             type="submit" 
             class="pray-button {% if prayer.has_prayed %}prayed{% else %}not-prayed{% endif %}"

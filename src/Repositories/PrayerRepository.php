@@ -14,17 +14,20 @@ class PrayerRepository
     public function getApprovedPrayersWithPrayedCount(int $userId, int $limit, int $offset): array
     {
         $stmt = $this->db->prepare("
-            SELECT 
+             SELECT 
                 p.*,
                 COUNT(DISTINCT up.user_id) AS prayed_count,
-                CASE WHEN up_self.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS has_prayed
+                EXISTS (
+                    SELECT 1 
+                    FROM user_prayers up2 
+                    WHERE up2.prayer_id = p.id AND up2.user_id = :user_id
+                ) AS has_prayed
             FROM prayers p
             LEFT JOIN user_prayers up ON p.id = up.prayer_id
-            LEFT JOIN user_prayers up_self ON p.id = up_self.prayer_id AND up_self.user_id = :user_id
             WHERE p.approved = TRUE
             GROUP BY p.id
             ORDER BY p.date_posted DESC
-            LIMIT :limit OFFSET :offset
+            LIMIT :limit OFFSET :offset            
         ");
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);

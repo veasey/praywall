@@ -29,12 +29,14 @@ class PrayerController
            \       \*/
 
     private TWIG $view;
+    private PDO $db;
     private PrayerRepository $prayerRepository;
 
     // Constructor that injects the Twig view service
     public function __construct(Twig $view, PDO $db)
     {
         $this->view = $view;
+        $this->db = $db;
         $this->prayerRepository = new PrayerRepository($db);
     }
 
@@ -127,9 +129,14 @@ class PrayerController
         $prayerId = $args['id'];
 
         $this->prayerRepository->togglePrayed($userId, $prayerId);
+        
+        // get redirect query param
+        $queryParams = $request->getQueryParams();
+        $redirectPage = $queryParams['redirect'] ?? 1;
 
+        // redirect back to prayers page with anchor and page param
         return $response
-            ->withHeader('Location', '/prayers')
+            ->withHeader('Location', "/prayers?page={$redirectPage}#prayer-{$prayerId}")
             ->withStatus(302);
     }
 }
