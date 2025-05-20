@@ -50,8 +50,16 @@ CREATE TABLE IF NOT EXISTS praises (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
-CREATE TABLE user_prayers (
+CREATE TABLE IF NOT EXISTS user_prayers (
     user_id INT NOT NULL,
     prayer_id INT NOT NULL,
     PRIMARY KEY (user_id, prayer_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_settings (
+    user_id INT UNSIGNED NOT NULL, 
+    setting_key VARCHAR(100) NOT NULL,
+    setting_value TEXT,
+    PRIMARY KEY (user_id, setting_key),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

@@ -121,6 +121,13 @@ button:hover {
   border: 1px solid #6e4c7b;
 }
 
+/* Success messages */
+.alert-success {
+  background-color: #2f4f34; /* Dark greenish */
+  color: #e0f7e9; /* Light minty green */
+  border: 1px solid #4a7c5d;
+}
+
 /* pagination controls */
 .pagination-controls {
   display: flex;

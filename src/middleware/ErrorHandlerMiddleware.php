@@ -60,4 +60,23 @@ class ErrorHandlerMiddleware
             $_SESSION['messages'][] = $message;
         }
     }
+
+    /**
+     * Add a success message to the session, preventing duplicates
+     * "I can do all things through him who strengthens me." (Philippians 4:13)
+     *
+     * @param string $message
+     * @return void
+     */
+    public static function addSuccess(string $message)
+    {
+        if (!isset($_SESSION['success'])) {
+            $_SESSION['success'] = [];
+        }
+
+        // Check if success message already exists in session
+        if (!in_array($message, $_SESSION['success'])) {
+            $_SESSION['success'][] = $message;
+        }
+    }
 }

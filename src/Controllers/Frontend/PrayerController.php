@@ -86,6 +86,9 @@ class PrayerController
                 $_SESSION['user']['id']
             );
 
+            // Send email notification to the admin
+            // ...
+
             $message = 'Your prayer request has been submitted.';
             if ($approved) {
                 $message = 'Your prayer request has been self approved and submitted.';

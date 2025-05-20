@@ -21,11 +21,15 @@ class TwigGlobalsMiddleware implements MiddlewareInterface
         // Read and clear session flash errors
         $errors = $_SESSION['errors'] ?? [];
         $messages = $_SESSION['messages'] ?? [];
+        $success = $_SESSION['success'] ?? [];
+
+
         $user = $_SESSION['user'] ?? null;
-        unset($_SESSION['errors'], $_SESSION['messages']);
+        unset($_SESSION['errors'], $_SESSION['messages'], $_SESSION['success']);
 
         $this->view->getEnvironment()->addGlobal('errors', $errors);
         $this->view->getEnvironment()->addGlobal('messages', $messages);
+        $this->view->getEnvironment()->addGlobal('success', $success);
         $this->view->getEnvironment()->addGlobal('user', $user);
 
         return $handler->handle($request);

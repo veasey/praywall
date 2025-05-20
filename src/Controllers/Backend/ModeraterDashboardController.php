@@ -87,9 +87,4 @@ class ModeraterDashboardController
                 ->withHeader('Location', '/moderate/requests')
                 ->withStatus(302);
     }
-
-    public function showSettings(Request $request, Response $response, $args)
-    {
-        return $this->view->render($response, 'backend/moderate/settings.twig');
-    }
 }

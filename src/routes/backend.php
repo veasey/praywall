@@ -2,6 +2,7 @@
 
 use App\Middleware\AuthMiddleware;
 use App\Controllers\Backend\ModeraterDashboardController;
+use App\Controllers\Backend\ModeratorSettingsController;
 use App\Controllers\Backend\AdminDashboardController;
 use Slim\App;
 
@@ -9,7 +10,8 @@ return function (App $app) {
 
     $app->group('/moderate', function ($group)  {
         $group->get('/requests', [ModeraterDashboardController::class, 'showDashboard']);
-        $group->get('/settings', [ModeraterDashboardController::class, 'showSettings']);
+        $group->get('/settings', [ModeratorSettingsController::class, 'showSettings']);
+        $group->post('/settings', [ModeratorSettingsController::class, 'updateSettings']);
         $group->post('/approve', [ModeraterDashboardController::class, 'approvePrayer']);
         $group->post('/deny', [ModeraterDashboardController::class, 'denyPrayer']);        
     })->add(new AuthMiddleware());
