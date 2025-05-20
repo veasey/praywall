@@ -4,6 +4,9 @@ namespace App\Controllers\Frontend;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Repositories\PrayerRepository;
+use App\Repositories\UserRepository;
+use App\Services\Herald;
+use App\Middleware\ErrorHandlerMiddleware;
 use Slim\Views\Twig;
 use PDO;
 
@@ -30,13 +33,20 @@ class PrayerController
     private TWIG $view;
     private PDO $db;
     private PrayerRepository $prayerRepository;
+    private UserRepository $userRepository;
+    private Herald $herald;
 
     // Constructor that injects the Twig view service
-    public function __construct(Twig $view, PDO $db)
+    public function __construct(
+        Twig $view, 
+        PDO $db, 
+        Herald $herald)
     {
         $this->view = $view;
         $this->db = $db;
         $this->prayerRepository = new PrayerRepository($db);
+        $this->userRepository = new UserRepository($db);
+        $this->herald = $herald;
     }
 
     public function listPrayers(Request $request, Response $response, $args)
@@ -87,7 +97,7 @@ class PrayerController
             );
 
             // Send email notification to the admin
-            // ...
+            $this->notifyModerators($data['title'], $data['description'], $approved);
 
             $message = 'Your prayer request has been submitted.';
             if ($approved) {
@@ -103,6 +113,19 @@ class PrayerController
 
         return $this->view->render($response, 'frontend/prayers/request.twig');
     }
+
+    private function notifyModerators($title, $description, $approved)
+    {        
+        $moderators = $this->userRepository->getModeratorsToNotifyOnNewPrayer();
+        foreach ($moderators as $moderator) {
+            $this->herald->proclaim(
+                $moderator['email'],
+                'New Prayer Request',
+                "A new prayer request has been submitted:\n\nTitle: $title\nDescription: $description\nApproved: " . ($approved ? 'Yes' : 'No')
+            );
+        }
+    }
+
     public function approvePrayer(Request $request, Response $response, $args)
     {
         $this->prayerRepository->approvePrayerRequest($args['id']);
