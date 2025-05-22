@@ -1,0 +1,14 @@
+<form method="get" class="pagination-options">
+    <label for="order">Sort:</label>
+    <select name="order" id="order" onchange="this.form.submit()">
+        <option value="desc" {{ pagination.order == 'desc' ? 'selected' : '' }}>Newest first</option>
+        <option value="asc" {{ pagination.order == 'asc' ? 'selected' : '' }}>Oldest first</option>
+    </select>
+
+    <label for="limit">Show:</label>
+    <select name="limit" id="limit" onchange="this.form.submit()">
+        <option value="5" {{ pagination.limit == 5 ? 'selected' : '' }}>5</option>
+        <option value="10" {{ pagination.limit == 10 ? 'selected' : '' }}>10</option>
+        <option value="20" {{ pagination.limit == 20 ? 'selected' : '' }}>20</option>
+    </select>
+</form>

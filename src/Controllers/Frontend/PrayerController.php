@@ -59,18 +59,14 @@ class PrayerController
         $userId = $_SESSION['user']['id'] ?? 0;
         $order = in_array(strtolower($params['order'] ?? ''), ['asc', 'desc']) ? strtolower($params['order']) : 'desc';
 
-        $totalPrayers = $this->prayerRepository->getTotalApprovedPrayersCount();
-        $prayers = $this->prayerRepository->getApprovedPrayersWithPrayedCount($userId, $pageSize, $offset, order: $order);
-        $totalPages = (int) ceil($totalPrayers / $pageSize);
-
-
-        return $this->view->render($response, 'frontend/prayers/view.twig', [
-            'prayers' => $prayers,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
+        $queryParams = [
+            'page' => $page,
+            'limit' => $pageSize,
             'order' => $order,
-            'limit' => $pageSize
-        ]);
+            'offset' => $offset
+        ];
+        $paginatedPrayers = $this->prayerRepository->getApprovedPrayersWithPrayedCountPaginated($queryParams, $userId);
+        return $this->view->render($response, 'frontend/prayers/view.twig', $paginatedPrayers);
     }
 
     public function prayerRequest(Request $request, Response $response, $args)

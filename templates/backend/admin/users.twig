@@ -1,0 +1,55 @@
+{% extends "base.twig" %}
+
+{% block title %}Admin Dashboard - Users & Roles{% endblock %}
+
+{% block content %}
+
+
+  <form method="get">
+    <select name="role">
+      <option value="">All Roles</option>
+      <option value="user" {{ filter.role == 'user' ? 'selected' }}>User</option>
+      <option value="moderator" {{ filter.role == 'moderator' ? 'selected' }}>Moderator</option>
+      <option value="admin" {{ filter.role == 'admin' ? 'selected' }}>Admin</option>
+    </select>
+
+    <select name="shadow_banned">
+      <option value="">Any Status</option>
+      <option value="1" {{ filter.shadow_banned == '1' ? 'selected' }}>Shadow Banned</option>
+      <option value="0" {{ filter.shadow_banned == '0' ? 'selected' }}>Not Banned</option>
+    </select>
+
+    <button type="submit">Apply Filters</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th><a href="?sort=name&dir={{ sort == 'name' and dir == 'asc' ? 'desc' : 'asc' }}">Name</a></th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Shadow Ban</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ user.shadow_banned ? 'Yes' : 'No' }}</td>
+          <td>
+            <a href="/admin/user/{{ user.id }}/edit">Edit</a>
+            <form method="post" action="/admin/user/{{ user.id }}/delete" style="display:inline;">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {{ include('partials/pagination.twig') }}
+
+{% endblock %}

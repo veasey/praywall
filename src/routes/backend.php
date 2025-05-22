@@ -4,6 +4,7 @@ use App\Middleware\AuthMiddleware;
 use App\Controllers\Backend\Moderator\DashboardController as ModeraterDashboardController;
 use App\Controllers\Backend\Moderator\SettingsController as ModeratorSettingsController;
 use App\Controllers\Backend\Admin\DashboardController as AdminDashboardController;
+use App\Controllers\Backend\Admin\UserController as AdminUserController;
 use Slim\App;
 
 return function (App $app) {
@@ -18,5 +19,6 @@ return function (App $app) {
 
     $app->group('/admin', function ($group)  {
         $group->get('/dashboard', [AdminDashboardController::class, 'dashboard']);
+        $group->get('/users', [AdminUserController::class, 'listUsers']);
     })->add(new AuthMiddleware());
 };

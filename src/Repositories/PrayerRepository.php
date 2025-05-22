@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Utils\Paginator;
 use PDO;
 
 class PrayerRepository
@@ -11,10 +12,16 @@ class PrayerRepository
         $this->db = $db;
     }
 
-    public function getApprovedPrayersWithPrayedCount(int $userId, int $limit, int $offset, string $order): array
+    public function getApprovedPrayersWithPrayedCountPaginated(array $queryParams, int $userId): array
     {
-        $stmt = $this->db->prepare("
-             SELECT 
+        $pagination = Paginator::paginate(
+            $queryParams,
+            defaultLimit: 10,
+            allowedSorts: ['created_at']
+        );
+
+        $sql = "
+            SELECT 
                 p.*,
                 COUNT(DISTINCT up.user_id) AS prayed_count,
                 EXISTS (
@@ -26,24 +33,33 @@ class PrayerRepository
             LEFT JOIN user_prayers up ON p.id = up.prayer_id
             WHERE p.approved = TRUE
             GROUP BY p.id
-            ORDER BY :order
-            LIMIT :limit OFFSET :offset            
-        ");
+            ORDER BY {$pagination['sort']} {$pagination['direction']}
+            LIMIT :limit OFFSET :offset
+        ";
 
-        $order = match ($order) {
-            'asc' => 'p.created_at ASC',
-            'desc' => 'p.created_at DESC',
-            default => 'p.created_at DESC'
-        };
-
+        $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindValue(':order', $order, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $pagination['limit'], PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $pagination['offset'], PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Optional: count total approved prayers for pagination UI
+        $countStmt = $this->db->query("SELECT COUNT(*) FROM prayers WHERE approved = TRUE");
+        $total = (int)$countStmt->fetchColumn();
+
+        return [
+            'prayers' => $results,
+            'pagination' => [
+                'total' => $total,
+                'page' => $pagination['page'],
+                'limit' => $pagination['limit'],
+                'offset' => $pagination['offset'],
+            ],
+        ];
     }
+
 
     public function getTotalApprovedPrayersCount(): int
     {
