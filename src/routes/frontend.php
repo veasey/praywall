@@ -3,7 +3,7 @@
 use App\Middleware\AuthMiddleware;
 use App\Controllers\Frontend\PrayerController;
 use App\Controllers\Frontend\AuthController;
-use App\Controllers\Backend\Moderater\DashboardController as ModeraterDashboardController;
+use App\Controllers\Backend\Moderator\DashboardController as ModeraterDashboardController;
 use Slim\App;
 
 return function (App $app) {
