@@ -126,4 +126,66 @@ class UserRepository
         ];
     }
 
+    public function updateRole(int $userId, string $role): void
+    {
+        $stmt = $this->db->prepare("UPDATE users SET role = :role WHERE id = :id");
+        $stmt->execute([':role' => $role, ':id' => $userId]);
+    }
+
+    public function deleteUser(int $userId): void
+    {
+        $stmt = $this->db->prepare("DELETE FROM users WHERE id = :id");
+        $stmt->execute([':id' => $userId]);
+    }
+
+    public function getUserById(int $userId): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt->execute([':id' => $userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public function getUserByEmail(string $email): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute([':email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public function getUserByUsername(string $username): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt->execute([':username' => $username]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public function createUser(array $userData): int
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO users (name, email, password, role, created_at) 
+            VALUES (:name, :email, :password, :role, NOW())
+        ");
+        $stmt->execute($userData);
+        return (int)$this->db->lastInsertId();
+    }
+
+    public function updateUser(int $userId, array $userData): void
+    {
+        $setClause = [];
+        foreach ($userData as $key => $value) {
+            $setClause[] = "$key = :$key";
+        }
+        $setClause = implode(', ', $setClause);
+
+        $stmt = $this->db->prepare("UPDATE users SET $setClause WHERE id = :id");
+        $userData['id'] = $userId;
+        $stmt->execute($userData);
+    }
+
+    public function getUserSettings(int $userId): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM user_settings WHERE user_id = :user_id");
+        $stmt->execute([':user_id' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
