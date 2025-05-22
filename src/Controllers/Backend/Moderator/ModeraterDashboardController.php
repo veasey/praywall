@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers\Backend;
+namespace App\Controllers\Backend\Moderator;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
