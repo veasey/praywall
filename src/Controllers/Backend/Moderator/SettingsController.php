@@ -10,12 +10,12 @@ use App\Middleware\ErrorHandlerMiddleware;
 use App\Repositories\UserSettingsRepository;
 
 /**
- * Summary of ModeraterDashboardController
+ * Summary of Moderator Settings Controller
  * - approves or denies prayer requests
  * - displays unapproved prayer requests
  * "And let us consider how we may spur one another on toward love and good deeds." - Hebrews 10:24
  */
-class ModeratorSettingsController
+class SettingsController
 {
     private TWIG $view;
     private PDO  $db;

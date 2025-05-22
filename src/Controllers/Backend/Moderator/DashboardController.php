@@ -9,12 +9,12 @@ use Slim\Views\Twig;
 use App\Middleware\ErrorHandlerMiddleware;
 
 /**
- * Summary of ModeraterDashboardController
+ * Summary of DashboardController
  * - approves or denies prayer requests
  * - displays unapproved prayer requests
  * "And let us consider how we may spur one another on toward love and good deeds." - Hebrews 10:24
  */
-class ModeraterDashboardController
+class DashboardController
 {
     private TWIG $view;
     private PDO  $db;

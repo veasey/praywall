@@ -1,9 +1,9 @@
 <?php
 
 use App\Middleware\AuthMiddleware;
-use App\Controllers\Backend\Moderator\ModeraterDashboardController;
-use App\Controllers\Backend\Moderator\ModeratorSettingsController;
-use App\Controllers\Backend\Admin\AdminDashboardController;
+use App\Controllers\Backend\Moderator\DashboardController as ModeraterDashboardController;
+use App\Controllers\Backend\Moderator\SettingsController as ModeratorSettingsController;
+use App\Controllers\Backend\Admin\DashboardController as AdminDashboardController;
 use Slim\App;
 
 return function (App $app) {

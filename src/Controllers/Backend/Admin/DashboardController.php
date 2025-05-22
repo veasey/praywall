@@ -11,7 +11,7 @@ use Slim\Views\Twig;
  * - manage users and permissions
  * - manage churches and locations
  */
-class AdminDashboardController
+class DashboardController
 {
     private TWIG $view;
     private PDO  $db;
