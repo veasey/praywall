@@ -2,6 +2,8 @@
 namespace App\Controllers\Backend\Admin;
 
 use App\Repositories\UserRepository;
+use App\Repositories\UserSettingsRepository;
+use App\Middleware\ErrorHandlerMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Views\Twig;
@@ -10,11 +12,13 @@ class UserController
 {
     private Twig $view;
     private UserRepository $userRepo;
+    private UserSettingsRepository $userSettingsRepo;
 
-    public function __construct(Twig $view, UserRepository $userRepo)
+    public function __construct(Twig $view, UserRepository $userRepo, UserSettingsRepository $userSettingsRepo)
     {
         $this->view = $view;
         $this->userRepo = $userRepo;
+        $this->userSettingsRepo = $userSettingsRepo;
     }
 
     public function listUsers(Request $request, Response $response)
@@ -66,11 +70,55 @@ class UserController
     {
         $userId = (int)$args['id'];
         $user = $this->userRepo->getUserById($userId);
+        $userSettings = $this->userSettingsRepo->getAllSettings($userId);
 
         if (!$user) {
             return $response->withStatus(404);
         }
 
-        return $this->view->render($response, 'backend/admin/user_edit.twig', ['user' => $user]);
+        return $this->view->render($response, 'backend/admin/user_edit.twig', [
+            'user' => $user,
+            'user_settings' => $userSettings,
+        ]);
+    }
+
+    public function updateUser(Request $request, Response $response, $args): Response
+    {
+        $userId = (int)$args['id'];
+        $params = $request->getParsedBody();
+
+        $userData = [
+            'name' => $params['name'] ?? '',
+            'email' => $params['email'] ?? '',
+            'role' => $params['role'] ?? 'user',
+        ];
+        $this->userRepo->updateUser($userId, $userData);
+
+        $settings = $params['settings'] ?? [];
+        foreach ($settings as $key => $value) {
+            $this->userSettingsRepo->setSetting($userId, $key, $value);
+        }
+
+        ErrorHandlerMiddleware::addSuccess('User updated successfully.');
+        return $response->withHeader('Location', '/admin/users')->withStatus(302);
+    }
+
+    public function showUserCreateForm(Request $request, Response $response): Response
+    {
+        return $this->view->render($response, 'backend/admin/user_create.twig');
+    }
+
+    public function createUser(Request $request, Response $response): Response
+    {
+        $params = $request->getParsedBody();
+        $name = $params['name'] ?? '';
+        $email = $params['email'] ?? '';
+        $password = $params['password'] ?? '';
+        $role = $params['role'] ?? 'user';
+
+        // Perform the user creation logic here
+        $this->userRepo->createUser($name, $email, $password, $role);
+
+        return $response->withHeader('Location', '/admin/users')->withStatus(302);
     }
 }

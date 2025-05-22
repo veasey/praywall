@@ -20,5 +20,10 @@ return function (App $app) {
     $app->group('/admin', function ($group)  {
         $group->get('/dashboard', [AdminDashboardController::class, 'dashboard']);
         $group->get('/users', [AdminUserController::class, 'listUsers']);
+        $group->get('/user/{id}/edit', [AdminUserController::class, 'showUserEditForm']);
+        $group->post('/user/{id}/edit', [AdminUserController::class, 'updateUser']);
+        $group->post('/user/{id}/delete', [AdminUserController::class, 'deleteUser']);
+        $group->post('/user/create', [AdminUserController::class, 'showUserCreateForm']);
+        $group->get('/settings', [AdminDashboardController::class, 'showSettings']);
     })->add(new AuthMiddleware());
 };

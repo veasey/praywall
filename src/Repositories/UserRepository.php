@@ -58,72 +58,91 @@ class UserRepository
 
     public function fetchPaginatedUsers(array $queryParams): array
     {
-        $pagination = Paginator::paginate(
-            $queryParams,
-            defaultLimit: 20,
-            allowedSorts: ['name', 'email', 'role', 'created_at']
-        );
+        $filters = [
+            'role' => $queryParams['role'] ?? null,
+        ];
 
-        $joins = '';
-        $conditions = 'WHERE 1=1';
-        $params = [];
+        $allUsers = $this->queryUsers($filters);
+        $pagination = Paginator::paginate($queryParams, defaultLimit: 20, allowedSorts: ['name', 'email', 'role', 'created_at']);
 
-        if (!empty($queryParams['shadow_banned'])) {
-            $joins .= " LEFT JOIN user_settings us ON users.id = us.user_id";
-            $conditions .= " AND us.setting_key = 'shadow_banned' AND us.setting_value = :shadow_banned";
-            $params['shadow_banned'] = $queryParams['shadow_banned'];
-        }
-
-        if (!empty($queryParams['role'])) {
-            $conditions .= " AND users.role = :role";
-            $params['role'] = $queryParams['role'];
-        }
-
-        $sql = "
-            SELECT users.* 
-            FROM users
-            $joins
-            $conditions
-            ORDER BY {$pagination['sort']} {$pagination['direction']}
-            LIMIT :limit OFFSET :offset
-        ";
-
-        $stmt = $this->db->prepare($sql);
-        foreach ($params as $key => $value) {
-            $stmt->bindValue(":$key", $value);
-        }
-        $stmt->bindValue(':limit', $pagination['limit'], PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $pagination['offset'], PDO::PARAM_INT);
-        $stmt->execute();
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Total count
-        $countSql = "
-            SELECT COUNT(*)
-            FROM users
-            $joins
-            $conditions
-        ";
-        $countStmt = $this->db->prepare($countSql);
-        foreach ($params as $key => $value) {
-            $countStmt->bindValue(":$key", $value);
-        }
-        $countStmt->execute();
-        $total = (int)$countStmt->fetchColumn();
+        $paginatedUsers = $this->paginate($allUsers, $pagination);
+        $usersWithSettings = $this->attachUserSettings($paginatedUsers, $queryParams['shadow_banned'] ?? null);
 
         return [
-            'users' => $users,
+            'users' => $usersWithSettings,
             'filter' => [
-                'role' => $queryParams['role'] ?? null,
+                'role' => $filters['role'],
                 'shadow_banned' => $queryParams['shadow_banned'] ?? null,
             ],
             'pagination' => [
-                'total' => $total,
+                'total' => count($allUsers),
                 'page' => $pagination['page'],
                 'limit' => $pagination['limit'],
                 'offset' => $pagination['offset'],
             ],
         ];
+    }
+
+    private function queryUsers(array $filters): array
+    {
+        $sql = "SELECT * FROM users WHERE 1=1";
+        $params = [];
+
+        if (!empty($filters['role'])) {
+            $sql .= " AND role = :role";
+            $params['role'] = $filters['role'];
+        }
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function paginate(array $users, array $pagination): array
+    {
+        usort($users, function ($a, $b) use ($pagination) {
+            $field = $pagination['sort'];
+            $direction = $pagination['direction'] === 'desc' ? -1 : 1;
+            return $direction * strcmp($a[$field], $b[$field]);
+        });
+
+        return array_slice($users, $pagination['offset'], $pagination['limit']);
+    }
+
+    private function attachUserSettings(array $users, $shadowFilter = null): array
+    {
+        if (empty($users)) {
+            return [];
+        }
+
+        $ids = array_column($users, 'id');
+        $in = str_repeat('?,', count($ids) - 1) . '?';
+
+        $sql = "SELECT user_id, setting_value FROM user_settings WHERE setting_key = 'shadow_banned' AND user_id IN ($in)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($ids);
+
+        $map = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $map[$row['user_id']] = (bool)$row['setting_value'];
+        }
+
+        $result = [];
+        foreach ($users as $user) {
+            $user['shadow_banned'] = $map[$user['id']] ?? false;
+
+            if ($shadowFilter !== null && (int)$user['shadow_banned'] !== (int)$shadowFilter) {
+                continue; // Skip if filtered out
+            }
+
+            $result[] = $user;
+        }
+
+        return $result;
     }
 
     public function updateRole(int $userId, string $role): void

@@ -1,9 +1,50 @@
 {% extends "base.twig" %}
 
-{% block title %}Admin Dashboard - Edit User{% endblock %}
+{% block title %}Admin - Edit User - {{ user.name }}{% endblock %}
 
 {% block content %}
+  <h2>Edit User</h2>
 
-    
+  <form method="post" action="/admin/user/{{ user.id }}/edit" class="user-edit-form">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="{{ user.name }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="{{ user.email }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select name="role" id="role">
+        <option value="user" {{ user.role == 'user' ? 'selected' }}>User</option>
+        <option value="moderator" {{ user.role == 'moderator' ? 'selected' }}>Moderator</option>
+        <option value="admin" {{ user.role == 'admin' ? 'selected' }}>Admin</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+        <label for="shadow_banned">Shadow Banned</label>
+        <select name="settings[shadow_banned]" id="shadow_banned">
+            <option value="0" {{ user_settings.shadow_banned != '1' ? 'selected' }}>No</option>
+            <option value="1" {{ user_settings.shadow_banned == '1' ? 'selected' }}>Yes</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="notifications_enabled">Email Notifications</label>
+        <select name="settings[notifications_enabled]" id="notifications_enabled">
+            <option value="1" {{ user_settings.notifications_enabled == '1' ? 'selected' }}>Enabled</option>
+            <option value="0" {{ user_settings.notifications_enabled != '1' ? 'selected' }}>Disabled</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit">Save Changes</button>
+      <a href="/admin/users">Cancel</a>
+    </div>
+  </form>
 
 {% endblock %}

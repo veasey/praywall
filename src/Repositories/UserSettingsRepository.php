@@ -30,4 +30,11 @@ class UserSettingsRepository
         $stmt = $this->db->prepare('DELETE FROM user_settings WHERE user_id = :user_id AND setting_key = :key');
         $stmt->execute(['user_id' => $userId, 'key' => $key]);
     }
+
+    public function getAllSettings(int $userId): array
+    {
+        $stmt = $this->db->prepare('SELECT setting_key, setting_value FROM user_settings WHERE user_id = :user_id');
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_KEY_PAIR) ?: [];
+    }
 }
