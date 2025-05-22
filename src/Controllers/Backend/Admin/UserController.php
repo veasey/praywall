@@ -27,16 +27,15 @@ class UserController
         $role = $params['role'] ?? null;
         $shadowBanned = $params['shadow_banned'] ?? null;
 
-        $filter = [
-            'role' => $role,
-            'shadow_banned' => $shadowBanned,
-        ];
-
         $queryParams = [
             'page' => $page,
             'limit' => $limit,
             'sort' => $sort,
             'dir' => $direction,
+            
+            // filters
+            'role' => $role,
+            'shadow_banned' => $shadowBanned
         ];
         $paginatedUsers = $this->userRepo->fetchPaginatedUsers($queryParams);
         return $this->view->render($response, 'backend/admin/users.twig', $paginatedUsers);
@@ -51,5 +50,27 @@ class UserController
         $this->userRepo->updateRole($userId, $role);
 
         return $response->withHeader('Location', '/admin/users')->withStatus(302);
+    }
+
+    public function deleteUser(Request $request, Response $response, $args): Response
+    {
+        $userId = (int)$args['id'];
+
+        // Perform the deletion logic here
+        $this->userRepo->deleteUser($userId);
+
+        return $response->withHeader('Location', '/admin/users')->withStatus(302);
+    }
+
+    public function showUserEditForm(Request $request, Response $response, $args): Response
+    {
+        $userId = (int)$args['id'];
+        $user = $this->userRepo->getUserById($userId);
+
+        if (!$user) {
+            return $response->withStatus(404);
+        }
+
+        return $this->view->render($response, 'backend/admin/user_edit.twig', ['user' => $user]);
     }
 }

@@ -64,21 +64,29 @@ class UserRepository
             allowedSorts: ['name', 'email', 'role', 'created_at']
         );
 
-        $sql = "SELECT * FROM users WHERE 1=1";
+        $joins = '';
+        $conditions = 'WHERE 1=1';
         $params = [];
 
-        // Optional filters
-        if (!empty($queryParams['email'])) {
-            $sql .= " AND email LIKE :email";
-            $params['email'] = '%' . $queryParams['email'] . '%';
+        if (!empty($queryParams['shadow_banned'])) {
+            $joins .= " LEFT JOIN user_settings us ON users.id = us.user_id";
+            $conditions .= " AND us.setting_key = 'shadow_banned' AND us.setting_value = :shadow_banned";
+            $params['shadow_banned'] = $queryParams['shadow_banned'];
         }
 
         if (!empty($queryParams['role'])) {
-            $sql .= " AND role = :role";
+            $conditions .= " AND users.role = :role";
             $params['role'] = $queryParams['role'];
         }
 
-        $sql .= " ORDER BY {$pagination['sort']} {$pagination['direction']} LIMIT :limit OFFSET :offset";
+        $sql = "
+            SELECT users.* 
+            FROM users
+            $joins
+            $conditions
+            ORDER BY {$pagination['sort']} {$pagination['direction']}
+            LIMIT :limit OFFSET :offset
+        ";
 
         $stmt = $this->db->prepare($sql);
         foreach ($params as $key => $value) {
@@ -86,19 +94,16 @@ class UserRepository
         }
         $stmt->bindValue(':limit', $pagination['limit'], PDO::PARAM_INT);
         $stmt->bindValue(':offset', $pagination['offset'], PDO::PARAM_INT);
-
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Get total count for pagination UI
-        $countSql = "SELECT COUNT(*) FROM users WHERE 1=1";
-        if (!empty($queryParams['email'])) {
-            $countSql .= " AND email LIKE :email";
-        }
-        if (!empty($queryParams['role'])) {
-            $countSql .= " AND role = :role";
-        }
-
+        // Total count
+        $countSql = "
+            SELECT COUNT(*)
+            FROM users
+            $joins
+            $conditions
+        ";
         $countStmt = $this->db->prepare($countSql);
         foreach ($params as $key => $value) {
             $countStmt->bindValue(":$key", $value);
@@ -108,6 +113,10 @@ class UserRepository
 
         return [
             'users' => $users,
+            'filter' => [
+                'role' => $queryParams['role'] ?? null,
+                'shadow_banned' => $queryParams['shadow_banned'] ?? null,
+            ],
             'pagination' => [
                 'total' => $total,
                 'page' => $pagination['page'],
