@@ -114,11 +114,23 @@ class UserController
         $name = $params['name'] ?? '';
         $email = $params['email'] ?? '';
         $password = $params['password'] ?? '';
-        $role = $params['role'] ?? 'user';
+
+        $userData = [
+            'name' => $name,
+            'email' => $email,
+            'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+            'role' => $params['role'] ?? 'user',
+        ];
 
         // Perform the user creation logic here
-        $this->userRepo->createUser($name, $email, $password, $role);
+        $userId = $this->userRepo->createUser($userData);
 
+        $userSettings = $params['settings'] ?? [];
+        foreach ($userSettings as $key => $value) {
+            $this->userSettingsRepo->setSetting($userId, $key, $value);
+        }
+
+        ErrorHandlerMiddleware::addSuccess('User created successfully.');
         return $response->withHeader('Location', '/admin/users')->withStatus(302);
     }
 }

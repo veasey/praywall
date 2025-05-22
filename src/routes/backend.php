@@ -23,7 +23,8 @@ return function (App $app) {
         $group->get('/user/{id}/edit', [AdminUserController::class, 'showUserEditForm']);
         $group->post('/user/{id}/edit', [AdminUserController::class, 'updateUser']);
         $group->post('/user/{id}/delete', [AdminUserController::class, 'deleteUser']);
-        $group->post('/user/create', [AdminUserController::class, 'showUserCreateForm']);
+        $group->get('/user/create', [AdminUserController::class, 'showUserCreateForm']);
+        $group->post('/user/create', [AdminUserController::class, 'createUser']);
         $group->get('/settings', [AdminDashboardController::class, 'showSettings']);
     })->add(new AuthMiddleware());
 };

@@ -181,8 +181,8 @@ class UserRepository
     public function createUser(array $userData): int
     {
         $stmt = $this->db->prepare("
-            INSERT INTO users (name, email, password, role, created_at) 
-            VALUES (:name, :email, :password, :role, NOW())
+            INSERT INTO users (name, email, password_hash, role, created_at) 
+            VALUES (:name, :email, :password_hash, :role, NOW())
         ");
         $stmt->execute($userData);
         return (int)$this->db->lastInsertId();

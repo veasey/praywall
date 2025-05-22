@@ -1,0 +1,55 @@
+{% extends "base.twig" %}
+
+{% block title %}Admin - Create User{% endblock %}
+
+{% block content %}
+  <h2>Edit User</h2>
+
+  <form method="post" action="/admin/user/create" class="user-edit-form">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="" required>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Password</label>
+      <input type="password" id="password" name="password" value="" required>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="" required>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select name="role" id="role">
+        <option value="user" 'selected'>User</option>
+        <option value="moderator">Moderator</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+        <label for="shadow_banned">Shadow Banned</label>
+        <select name="settings[shadow_banned]" id="shadow_banned">
+            <option value="0" selected'>No</option>
+            <option value="1">Yes</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="notifications_enabled">Email Notifications</label>
+        <select name="settings[notifications_enabled]" id="notifications_enabled">
+            <option value="1">Enabled</option>
+            <option value="0" selected>Disabled</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit">Create User</button>
+      <a href="/admin/users">Cancel</a>
+    </div>
+  </form>
+
+{% endblock %}
