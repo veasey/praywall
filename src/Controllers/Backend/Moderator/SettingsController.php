@@ -47,7 +47,7 @@ class SettingsController
         $params = $request->getParsedBody();
 
         // Check if fields are present, default to false if not set
-        $emailNotifications = isset($params['notify_email']) && filter_var($params['notify_email'], FILTER_VALIDATE_BOOLEAN);
+        $emailNotifications = isset($params['email_notifications']) && filter_var($params['email_notifications'], FILTER_VALIDATE_BOOLEAN);
         $automaticApproval = isset($params['auto_approve']) && filter_var($params['auto_approve'], FILTER_VALIDATE_BOOLEAN);
 
         $this->userSettingsRepository->setSetting($userId, 'email_notifications', $emailNotifications ? 'true' : 'false');

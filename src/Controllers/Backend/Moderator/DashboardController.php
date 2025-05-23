@@ -83,6 +83,8 @@ class DashboardController
         ");
         $stmt->execute(['id' => $data['id']]);
 
+        ErrorHandlerMiddleware::addMessage('Prayer removed.');
+
         return $response
                 ->withHeader('Location', '/moderate/requests')
                 ->withStatus(302);
