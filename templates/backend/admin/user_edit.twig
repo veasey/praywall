@@ -34,10 +34,10 @@
     </div>
 
     <div class="form-group">
-        <label for="notifications_enabled">Email Notifications</label>
-        <select name="settings[notifications_enabled]" id="notifications_enabled">
-            <option value="1" {{ user_settings.notifications_enabled == '1' ? 'selected' }}>Enabled</option>
-            <option value="0" {{ user_settings.notifications_enabled != '1' ? 'selected' }}>Disabled</option>
+        <label for="email_notifications">Email Notifications</label>
+        <select name="settings[email_notifications]" id="email_notifications">
+            <option value="1" {{ user_settings.email_notifications == '1' ? 'selected' }}>Enabled</option>
+            <option value="0" {{ user_settings.email_notifications != '1' ? 'selected' }}>Disabled</option>
         </select>
     </div>
 

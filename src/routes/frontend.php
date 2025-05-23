@@ -12,8 +12,8 @@ return function (App $app) {
     $app->get('/', [PrayerController::class, 'listPrayers']);
     $app->group('/prayers', function ($group) {
         $group->get('', [PrayerController::class, 'listPrayers']);
-        $group->get('/request', [PrayerController::class, 'prayerRequest']);
-        $group->post('/request', [PrayerController::class, 'prayerRequest']);
+        $group->get('/request', [PrayerController::class, 'prayerRequest'])->add(new AuthMiddleware());
+        $group->post('/request', [PrayerController::class, 'prayerRequest'])->add(new AuthMiddleware());
         $group->post('/pray/{id}', [PrayerController::class, 'pray'])->add(new AuthMiddleware());
     });
 
