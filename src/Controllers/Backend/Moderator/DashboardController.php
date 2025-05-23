@@ -32,7 +32,7 @@ class DashboardController
             SELECT * 
             FROM prayers 
             WHERE approved = FALSE
-            ORDER BY date_posted DESC
+            ORDER BY created_at DESC
         ");
         $unapproved = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
