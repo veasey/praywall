@@ -17,6 +17,13 @@ class Herald
         $fromAddress = getenv('MAIL_FROM_ADDRESS');
         $fromName = getenv('MAIL_FROM_NAME') ?: 'Messenger';
         $heavenlySeal = "From: {$fromName} <{$fromAddress}>\r\n";
-        return mail($unto, $title, $scripture, $seal ?: $heavenlySeal);
+
+        $success = mail($unto, $title, $scripture, $seal ?: $heavenlySeal);
+
+        if (!$success) {
+            error_log("Failed to send mail to $unto");
+        }
+
+        return $success;
     }
 }
