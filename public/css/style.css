@@ -194,3 +194,9 @@ button:hover {
     gap: 0.5rem;
   }
 }
+
+.flex-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

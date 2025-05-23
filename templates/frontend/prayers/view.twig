@@ -2,7 +2,16 @@
 
 {% block content %}
     
-  <h1>Prayers</h1>
+  <div class="flex-box">
+    <h1>Prayers</h1>
+
+    <!-- Button to submit a new prayer -->
+    <div>
+      <a href="/prayers/request">
+        <button style="margin-top: 0" type="button">Submit a Request for Prayer</button>
+      </a>
+    </div>
+  </div>
 
   {% for prayer in prayers %}
     <div class="prayer-card" id="prayer-{{ prayer.id }}">
@@ -57,12 +66,5 @@
   {% endif %}
 
   {{ include('partials/pagination.twig') }}
-
-  <!-- Button to submit a new prayer -->
-  <div>
-    <a href="/prayers/request">
-      <button type="button">Submit a Request for Prayer</button>
-    </a>
-  </div>
 
 {% endblock %}
