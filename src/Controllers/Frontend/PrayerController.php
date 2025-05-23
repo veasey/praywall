@@ -114,17 +114,13 @@ class PrayerController
     {   
         $moderators = $this->userRepository->getModeratorsToNotifyOnNewPrayer();
         foreach ($moderators as $moderator) {
-
-            die($moderator['email']);
-
+            // Send email to each moderator
             $this->herald->proclaim(
                 $moderator['email'],
                 'New Prayer Request',
                 "A new prayer request has been submitted:\n\nTitle: $title\nDescription: $description\nApproved: " . ($approved ? 'Yes' : 'No')
             );
         }
-
-        die("email!");
     }
 
     public function approvePrayer(Request $request, Response $response, $args)

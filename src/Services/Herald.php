@@ -14,7 +14,9 @@ class Herald
      */
     public function proclaim(string $unto, string $title, string $scripture, string $seal = ''): bool
     {
-        $heavenlySeal = "From: messenger@theassembly.org\r\n";
+        $fromAddress = getenv('MAIL_FROM_ADDRESS');
+        $fromName = getenv('MAIL_FROM_NAME') ?: 'Messenger';
+        $heavenlySeal = "From: {$fromName} <{$fromAddress}>\r\n";
         return mail($unto, $title, $scripture, $seal ?: $heavenlySeal);
     }
 }
