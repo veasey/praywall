@@ -67,15 +67,15 @@ class PrayerRepository
         return (int) $stmt->fetchColumn();
     }
 
-    public function insertPrayerRequest(string $title, string $description, int $userId): void
+    public function insertPrayerRequest(string $title, string $body, int $userId): void
     {
         $stmt = $this->db->prepare("
-            INSERT INTO prayers (title, description, user_id) 
-            VALUES (:title, :description, :user_id)
+            INSERT INTO prayers (title, body, user_id) 
+            VALUES (:title, :body, :user_id)
         ");
         $stmt->execute([
             ':title' => $title,
-            ':description' => $description,
+            ':body' => $body,
             ':user_id' => $userId
         ]);
     }

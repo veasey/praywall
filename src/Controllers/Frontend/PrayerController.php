@@ -88,12 +88,12 @@ class PrayerController
 
             $this->prayerRepository->insertPrayerRequest(
                 $data['title'],
-                $data['description'],
+                $data['body'],
                 $_SESSION['user']['id']
             );
 
             // Send email notification to the admin
-            $this->notifyModerators($data['title'], $data['description'], $approved);
+            $this->notifyModerators($data['title'], $data['body'], $approved);
 
             $message = 'Your prayer request has been submitted.';
             if ($approved) {
