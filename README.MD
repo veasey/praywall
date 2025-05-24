@@ -64,3 +64,7 @@ Adjust as needed for your local or production setup.
 | Import database schema | docker exec -i praywall_db mysql -u root -proot praywall < db/schema.sql |
 | Export database schema | docker exec praywall_db mysqldump -u root -proot --no-data praywall > db/schema.sql |
 | Deploy via Docker VPS | docker-compose -f docker-compose.yml up -d --build |
+
+
+### Mail Testing
+Mailhog view emails at: http://localhost:8025

@@ -29,5 +29,11 @@ services:
       interval: 10s
       retries: 5
 
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"   # MailHog web UI for viewing emails
+      - "1025:1025"   # SMTP port
+
 volumes:
   praywall_dbdata:
