@@ -36,22 +36,18 @@ class SettingsController
             'email_notifications' => $this->userSettingsRepository->getSetting($userId, 'email_notifications'),
             'automatic_approval' => $this->userSettingsRepository->getSetting($userId, 'automatic_approval')
         ];
-        return $this->view->render($response, 'backend/moderate/settings.twig', [
-            'settings' => $settings
-        ]);
+        return $this->view->render($response, 'backend/moderate/settings.twig', $settings);
     }
 
     public function updateSettings(Request $request, Response $response, $args)
     {
         $userId = $_SESSION['user']['id'] ?? 0;
-        $params = $request->getParsedBody();
+        $params = $request->getParsedBody() ?? [];
 
-        // Check if fields are present, default to false if not set
-        $emailNotifications = isset($params['email_notifications']) && filter_var($params['email_notifications'], FILTER_VALIDATE_BOOLEAN);
-        $automaticApproval = isset($params['auto_approve']) && filter_var($params['auto_approve'], FILTER_VALIDATE_BOOLEAN);
-
-        $this->userSettingsRepository->setSetting($userId, 'email_notifications', $emailNotifications ? 'true' : 'false');
-        $this->userSettingsRepository->setSetting($userId, 'automatic_approval', $automaticApproval ? 'true' : 'false');
+        // Validate and sanitize input
+        foreach(['email_notifications', 'automatic_approval'] as $settingFieldName) {
+            $this->userSettingsRepository->setSetting($userId, $settingFieldName, !empty($params[$settingFieldName]) ? 'true' : 'false');
+        }
 
         // Add success message
         ErrorHandlerMiddleware::addSuccess("Settings updated successfully.");

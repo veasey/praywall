@@ -4,16 +4,17 @@
   <h1>Moderator Settings</h1>
 
   <form method="post" action="/moderate/settings" class="moderator-settings-form">
+    
     <div class="form-group">
-      <label for="auto_approve">
-        <input type="checkbox" id="auto_approve" name="auto_approve" {% if settings.automatic_approval == 'true' %}checked{% endif %}>
+      <label for="automatic_approval">
+        <input type="checkbox" id="automatic_approval" name="automatic_approval" {% if automatic_approval == 'true' %}checked{% endif %}>
         Auto-approve prayers
       </label>
     </div>
 
     <div class="form-group">
       <label for="email_notifications">
-        <input type="checkbox" id="email_notifications" name="email_notifications" {% if settings.email_notifications == 'true' %}checked{% endif %}>
+        <input type="checkbox" id="email_notifications" name="email_notifications" {% if email_notifications == 'true' %}checked{% endif %}>
         Send email when a new prayer is submitted
       </label>
     </div>

@@ -25,7 +25,5 @@
 
 
 - admin dashboard
-  - manage users
-  - manage user roles
 - reset password requests
 - pagination of requests.
