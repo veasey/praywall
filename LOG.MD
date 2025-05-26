@@ -1,9 +1,5 @@
 ## Features Todo
 
-- moderator
-  - email on new request
-  - settings logic
-
 - need praise request
 
 - moderator cont

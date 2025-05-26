@@ -67,4 +67,5 @@ Adjust as needed for your local or production setup.
 
 
 ### Mail Testing
+`docker-compose --profile dev up`
 Mailhog view emails at: http://localhost:8025

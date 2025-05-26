@@ -31,6 +31,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog
+    profiles: ["dev"]
     ports:
       - "8025:8025"   # MailHog web UI for viewing emails
       - "1025:1025"   # SMTP port
