@@ -1,16 +1,15 @@
 ## Phase 1: Core Praise Functionality (1.5–2 hrs)
 
 ### 🔹 1. Praise Creation Flow (1 hr)
-- [ ] Create `/praises/submit` route (GET + POST)
-- [ ] Build praise form (fields: title, content, optional prayer ID)
-- [ ] Handle submission and insert into database
-- [ ] Redirect to either the Praise tab or the relevant prayer section
-- [ ] Add CSRF protection (if used in your stack)
+- [x] Create `/praises/submit` route (GET + POST)
+- [x] Build praise form (fields: title, content, optional prayer ID)
+- [x] Handle submission and insert into database
+- [x] Redirect to either the Praise tab or the relevant prayer section
 
 ### 🔹 2. Praise Display Logic (30–45 min)
-- [ ] Load praises in controller
-- [ ] Display praises in `/praises` page or within each prayer (if inline)
-- [ ] (Optional) Add praise count badge in the Praise tab
+- [x] Load praises in controller
+- [x] Display praises in `/praises` page 
+  - [ ] or within each prayer (if inline)
 
 ---
 
