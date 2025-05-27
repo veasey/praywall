@@ -203,23 +203,37 @@ button:hover {
   }
 }
 
-/* ========== Tabs & Toggles ========== */
+/* ========== Tabs ========== */
 .tab-bar {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  background-color: #f0f4f8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .tab {
-  padding: 0.5rem 1rem;
-  border-bottom: 3px solid transparent;
+  flex: 1;
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
   text-decoration: none;
-  color: inherit;
+  color: #333;
+  background-color: #e2e8f0;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.tab:hover {
+  background-color: #d1dbe8;
 }
 
 .tab.active {
-  border-color: #007BFF;
-  font-weight: bold;
+  background-color: #007BFF;
+  color: white;
+  box-shadow: inset 0 -4px 0 #0056b3;
 }
 
 .inline-toggle {
