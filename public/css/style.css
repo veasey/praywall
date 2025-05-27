@@ -1,35 +1,49 @@
+/* ========== Base Styles ========== */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f4f7fa; /* pale blue/white */
-    color: #444; /* dark slate grey */
-    margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f7fa; /* pale blue/white */
+  color: #444; /* dark slate grey */
+  margin: 0;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  color: #555; /* slightly lighter grey */
+  margin-top: 0;
 }
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-.prayer-card {
-  position: relative;
-  padding: 1.5rem;
-  border: 1px solid #4a2e61;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+/* ========== Form Elements ========== */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccd6dd; /* soft blue-grey */
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 
-.prayer-card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* ========== Buttons ========== */
+button {
+  background-color: #b8c4db; /* muted silver-blue */
+  color: #333;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1rem;
 }
 
-.prayer-card-footer .date {
-  font-size: 0.8rem;
-  color: #888; /* soft grey */
-  text-align: right;
+button:hover {
+  background-color: #9aa9c4; /* slightly deeper muted blue */
 }
 
 .pray-button {
@@ -49,56 +63,38 @@ body {
 }
 
 .pray-button.prayed {
-  background-color: #cde7d8;  /* light sage green */
-  color: #2f4f34;             /* dark greenish text */
-  border-color: #a3c4a1;      /* muted green border */
-  cursor: pointer;
+  background-color: #cde7d8;
+  color: #2f4f34;
+  border-color: #a3c4a1;
 }
 
 .pray-button.prayed:hover {
-  background-color: #b5d2c1;  /* slightly darker on hover */
+  background-color: #b5d2c1;
 }
 
-h1, h2, h3 {
-    font-weight: 600;
-    color: #555; /* slightly lighter grey */
-    margin-top: 0;
+/* ========== Cards ========== */
+.prayer-card {
+  position: relative;
+  padding: 1.5rem;
+  border: 1px solid #4a2e61;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-textarea {
-    width: 100%;
-    padding: 0.75rem;
-    margin-top: 0.5rem;
-    border: 1px solid #ccd6dd; /* soft blue-grey */
-    border-radius: 6px;
-    box-sizing: border-box;
+.prayer-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-button {
-    background-color: #b8c4db; /* muted silver-blue */
-    color: #333;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 1rem;
+.prayer-card-footer .date {
+  font-size: 0.8rem;
+  color: #888;
+  text-align: right;
 }
 
-button:hover {
-    background-color: #9aa9c4; /* slightly deeper muted blue */
-}
-
-.error {
-    color: #8a3c3c; /* softer muted red */
-    background-color: #fbeaea; /* very pale pinkish background */
-    padding: 0.5rem;
-    border-radius: 5px;
-    margin-top: 1rem;
-}
-
+/* ========== Alerts ========== */
 .alert {
   padding: 1rem;
   margin-bottom: 1rem;
@@ -107,28 +103,33 @@ button:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Error messages */
 .alert-error {
-  background-color: #5a0f25; /* Deep rose red */
-  color: #ffeef0; /* Light dusty pink */
+  background-color: #5a0f25;
+  color: #ffeef0;
   border: 1px solid #8b1e3f;
 }
 
-/* Info / general messages */
 .alert-info {
-  background-color: #2e1f3d; /* Deep purple */
-  color: #f0e9d8; /* Soft gold/ivory */
+  background-color: #2e1f3d;
+  color: #f0e9d8;
   border: 1px solid #6e4c7b;
 }
 
-/* Success messages */
 .alert-success {
-  background-color: #2f4f34; /* Dark greenish */
-  color: #e0f7e9; /* Light minty green */
+  background-color: #2f4f34;
+  color: #e0f7e9;
   border: 1px solid #4a7c5d;
 }
 
-/* pagination controls */
+.error {
+  color: #8a3c3c;
+  background-color: #fbeaea;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin-top: 1rem;
+}
+
+/* ========== Pagination ========== */
 .pagination-controls {
   display: flex;
   justify-content: center;
@@ -187,6 +188,13 @@ button:hover {
   border-color: #999;
 }
 
+/* ========== Layout Helpers ========== */
+.flex-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 @media (max-width: 600px) {
   .pagination-controls,
   .pagination-options {
@@ -195,8 +203,32 @@ button:hover {
   }
 }
 
-.flex-box {
+/* ========== Tabs & Toggles ========== */
+.tab-bar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  border-bottom: 3px solid transparent;
+  text-decoration: none;
+  color: inherit;
+}
+
+.tab.active {
+  border-color: #007BFF;
+  font-weight: bold;
+}
+
+.inline-toggle {
+  margin-bottom: 1rem;
+}
+
+.inline-praises {
+  background: #f9f9f9;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-left: 4px solid #4CAF50;
 }
