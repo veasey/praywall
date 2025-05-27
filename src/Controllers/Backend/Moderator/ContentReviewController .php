@@ -9,7 +9,7 @@ use App\Repositories\PraiseReportRepository;
 use Slim\Views\Twig;
 use App\Middleware\ErrorHandlerMiddleware;
 
-class DashboardController
+class ContentReviewController 
 {
     private Twig $view;
     private PrayerRepository $prayerRepo;

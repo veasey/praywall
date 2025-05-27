@@ -4,7 +4,7 @@ use App\Middleware\AuthMiddleware;
 use App\Controllers\Frontend\PrayerController;
 use App\Controllers\Frontend\PraiseController;
 use App\Controllers\Frontend\AuthController;
-use App\Controllers\Backend\Moderator\DashboardController as ModeraterDashboardController;
+use App\Controllers\Backend\Moderator\ContentReviewController;
 use App\Controllers\Backend\Profile\SettingsController as ProfileSettingsController;
 use Slim\App;
 
@@ -37,7 +37,7 @@ return function (App $app) {
 
     // moderator controls
     $app->group('/moderate/unapprove', function ($group) {
-        $group->get('/prayer/{id}', [ModeraterDashboardController::class, 'unapprovePrayer']);
-        $group->get('/praise/{id}', [ModeraterDashboardController::class, 'unapprovePraise']);
+        $group->get('/prayer/{id}', [ContentReviewController::class, 'unapprovePrayer']);
+        $group->get('/praise/{id}', [ContentReviewController::class, 'unapprovePraise']);
     })->add(new AuthMiddleware());
 };
