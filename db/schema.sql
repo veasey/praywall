@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS praises (
     prayer_id INT UNSIGNED,
     user_id INT UNSIGNED,
     body TEXT NOT NULL,
+    approved BOOLEAN DEFAULT FALSE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (prayer_id) REFERENCES prayers(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
