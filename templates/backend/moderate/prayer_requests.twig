@@ -1,6 +1,6 @@
 {% extends "base.twig" %}
 
-{% block title %}Moderator Dashboard{% endblock %}
+{% block title %}Moderator Dashboard - Prayer Requests{% endblock %}
 
 {% block content %}
     <h1 class="dashboard-heading">Unapproved Prayers</h1>
@@ -14,11 +14,11 @@
             <p class="moderation-body">{{ prayer.body }}</p>
 
             <div class="request-buttons">
-                <form method="post" action="/moderate/approve">
+                <form method="post" action="/moderate/prayer/approve">
                     <input type="hidden" name="id" value="{{ prayer.id }}">
                     <button class="approve-btn">Approve</button>
                 </form>
-                <form method="post" action="/moderate/deny">
+                <form method="post" action="/moderate/prayer/deny">
                     <input type="hidden" name="id" value="{{ prayer.id }}">
                     <button class="deny-btn">Deny</button>
                 </form>

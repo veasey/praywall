@@ -2,6 +2,7 @@
 
 use App\Middleware\AuthMiddleware;
 use App\Controllers\Frontend\PrayerController;
+use App\Controllers\Frontend\PraiseController;
 use App\Controllers\Frontend\AuthController;
 use App\Controllers\Backend\Moderator\DashboardController as ModeraterDashboardController;
 use App\Controllers\Backend\Profile\SettingsController as ProfileSettingsController;
@@ -11,12 +12,15 @@ return function (App $app) {
 
     // Home Page    
     $app->get('/', [PrayerController::class, 'listPrayers']);
+    $app->get('/prayers', [PrayerController::class, 'listPrayers']);
+    $app->get('/praises', [PraiseController::class, 'listPraiseReports']);
+
+    // communial prayer
     $app->group('/prayers', function ($group) {
-        $group->get('', [PrayerController::class, 'listPrayers']);
-        $group->get('/request', [PrayerController::class, 'prayerRequest'])->add(new AuthMiddleware());
-        $group->post('/request', [PrayerController::class, 'prayerRequest'])->add(new AuthMiddleware());
-        $group->post('/pray/{id}', [PrayerController::class, 'pray'])->add(new AuthMiddleware());
-    });
+        $group->get('/request', [PrayerController::class, 'prayerRequest']);
+        $group->post('/request', [PrayerController::class, 'prayerRequest']);
+        $group->post('/pray/{id}', [PrayerController::class, 'pray']);
+    })->add(new AuthMiddleware());
 
     // Logon Form
     $app->get('/login', [AuthController::class, 'showLoginForm']);
@@ -26,11 +30,14 @@ return function (App $app) {
     $app->get('/logout', [AuthController::class, 'logout'])->add(new AuthMiddleware());
 
     // profile settings
-     $app->group('/profile', function ($group) {
-        $group->get('/settings', [ProfileSettingsController::class, 'showProfileSettings'])->add(new AuthMiddleware());
-        $group->post('/settings', [ProfileSettingsController::class, 'updateProfileSettings'])->add(new AuthMiddleware());
-    });
+    $app->group('/profile', function ($group) {
+        $group->get('/settings', [ProfileSettingsController::class, 'showProfileSettings']);
+        $group->post('/settings', [ProfileSettingsController::class, 'updateProfileSettings']);
+    })->add(new AuthMiddleware());
 
     // moderator controls
-    $app->get('/moderate/unapprove/{id}', [ModeraterDashboardController::class, 'unapprovePrayer']); // Unapprove a prayer request from frontend
+    $app->group('/moderate/unapprove', function ($group) {
+        $group->get('/prayer/{id}', [ModeraterDashboardController::class, 'unapprovePrayer']);
+        $group->get('/praise/{id}', [ModeraterDashboardController::class, 'unapprovePraise']);
+    })->add(new AuthMiddleware());
 };

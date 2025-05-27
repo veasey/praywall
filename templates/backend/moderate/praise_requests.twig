@@ -1,0 +1,30 @@
+{% extends "base.twig" %}
+
+{% block title %}Moderator Dashboard - Praise Requests{% endblock %}
+
+{% block content %}
+    <h1 class="dashboard-heading">Unapproved Praise Reports</h1>
+
+    {% for praise in unapproved %}
+        <div class="moderation-card">
+            <div class="moderation-card-header">
+                <strong>{{ praise.title }}</strong>
+                <small class="prayer-date">Submitted on {{ praise.created_at }}</small>
+            </div>
+            <p class="moderation-body">{{ praise.body }}</p>
+
+            <div class="request-buttons">
+                <form method="post" action="/moderate/praise/approve">
+                    <input type="hidden" name="id" value="{{ praise.id }}">
+                    <button class="approve-btn">Approve</button>
+                </form>
+                <form method="post" action="/moderate/praise/deny">
+                    <input type="hidden" name="id" value="{{ praise.id }}">
+                    <button class="deny-btn">Deny</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <p>No praise reports yet.</p>
+    {% endfor %}
+{% endblock %}

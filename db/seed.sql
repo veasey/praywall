@@ -77,7 +77,7 @@ INSERT INTO user_prayers (user_id, prayer_id) VALUES
 (2, 28),
 (3, 30);
 
-INSERT INTO praises (user_id, prayer_id, title, content, created_at, updated_at) VALUES
-(1, 3, 'Healing Received!', 'After many weeks of prayer, my test results came back clear. Praise God!', NOW(), NOW()),
-(2, NULL, 'Thankful for Daily Provision', 'Even when things are tight, I see His hand in my life every day.', NOW(), NOW()),
-(3, 5, 'My Son is Home!', 'Thank you all for praying. My son has returned safely.', NOW(), NOW());
+INSERT INTO praises (user_id, prayer_id, title, body, created_at) VALUES
+(1, 3, 'Healing Received!', 'After many weeks of prayer, my test results came back clear. Praise God!', NOW()),
+(2, NULL, 'Thankful for Daily Provision', 'Even when things are tight, I see His hand in my life every day.', NOW()),
+(3, 5, 'My Son is Home!', 'Thank you all for praying. My son has returned safely.', NOW());

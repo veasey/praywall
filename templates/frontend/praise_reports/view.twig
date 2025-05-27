@@ -1,0 +1,75 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+  {{ include('partials/tab_bar.twig') }}  
+
+  <div class="flex-box">
+    <h1>Praise Reports</h1>
+
+    <!-- Button to submit a new prayer -->
+    <div>
+      <a href="/prayers/request">
+        <button style="margin-top: 0" type="button">Share your Praise</button>
+      </a>
+    </div>
+  </div>
+
+  {% for praise in praises %}
+    <div class="prayer-card" id="prayer-{{ praise.id }}">
+
+      {% if user and user.role != 'user' %}
+        <div class="unapprove-button">
+          <a href="/moderate/unapprove/praise/{{praise.id}}">Unapprove</a>
+        </div>
+      {% endif %}
+
+      <h2>{{ praise.title }}</h2>
+      <p>{{ praise.body }}</p>
+
+      <div class="prayer-card-footer">
+
+        <p class="date">
+          {{ praise.created_at|date("F jS \\a\\t g:ia")  }}
+        </p>
+
+      </div>
+
+    </div>
+  {% else %}
+    <p>No praise reports yet.</p>
+  {% endfor %}
+
+  {% if totalPages > 1 %}
+    <nav class="pagination-controls">
+      {% if currentPage > 1 %}
+        <a href="?page={{ currentPage - 1 }}&order={{ order|default('desc') }}&limit={{ limit|default(10) }}">&laquo; Previous</a>
+      {% endif %}
+
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+      {% if currentPage < totalPages %}
+        <a href="?page={{ currentPage + 1 }}&order={{ order|default('desc') }}&limit={{ limit|default(10) }}">Next &raquo;</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+  {{ include('partials/pagination.twig') }}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('toggle-inline-praises');
+      const praises = document.querySelectorAll('.inline-praises');
+
+      function updateDisplay() {
+        praises.forEach(p => {
+          p.style.display = toggle.checked ? 'block' : 'none';
+        });
+      }
+
+      toggle.addEventListener('change', updateDisplay);
+      updateDisplay();
+    });
+  </script>
+
+{% endblock %}

@@ -49,7 +49,7 @@ class PraiseController
             'offset' => $offset
         ];
         $paginatedPrayers = $this->praiseReportRepository->getApprovedPraiseReportsWithPrayedCountPaginated($queryParams, $userId);
-        return $this->view->render($response, 'frontend/prayers/view.twig', $paginatedPrayers);
+        return $this->view->render($response, 'frontend/praise_reports/view.twig', $paginatedPrayers);
     }
 
     public function praiseReportRequest(Request $request, Response $response, $args)

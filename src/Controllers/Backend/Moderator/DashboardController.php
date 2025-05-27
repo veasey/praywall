@@ -4,39 +4,28 @@ namespace App\Controllers\Backend\Moderator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-use PDO;
+use App\Repositories\PrayerRepository;
+use App\Repositories\PraiseReportRepository;
 use Slim\Views\Twig;
 use App\Middleware\ErrorHandlerMiddleware;
 
-/**
- * Summary of DashboardController
- * - approves or denies prayer requests
- * - displays unapproved prayer requests
- * "And let us consider how we may spur one another on toward love and good deeds." - Hebrews 10:24
- */
 class DashboardController
 {
-    private TWIG $view;
-    private PDO  $db;
+    private Twig $view;
+    private PrayerRepository $prayerRepo;
+    private PraiseReportRepository $praiseRepo;
 
-    // Constructor that injects the Twig view service
-    public function __construct(Twig $view, PDO $db)
+    public function __construct(Twig $view, PrayerRepository $prayerRepo, PraiseReportRepository $praiseRepo)
     {
-        $this->view = $view;
-        $this->db   = $db;
+        $this->view       = $view;
+        $this->prayerRepo = $prayerRepo;
+        $this->praiseRepo = $praiseRepo;
     }
 
-    public function showDashboard(Request $request, Response $response, $args)
+    public function showPrayerRequests(Request $request, Response $response, $args)
     {
-        $stmt = $this->db->query("
-            SELECT * 
-            FROM prayers 
-            WHERE approved = FALSE
-            ORDER BY created_at DESC
-        ");
-        $unapproved = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $this->view->render($response, 'backend/moderate/requests.twig', [
+        $unapproved = $this->prayerRepo->getUnapproved();
+        return $this->view->render($response, 'backend/moderate/prayer_requests.twig', [
             'unapproved' => $unapproved
         ]);
     }
@@ -44,49 +33,60 @@ class DashboardController
     public function approvePrayer(Request $request, Response $response, $args)
     {
         $data = $request->getParsedBody();
-        $stmt = $this->db->prepare("
-            UPDATE prayers 
-            SET approved = TRUE 
-            WHERE id = :id
-        ");
-        $stmt->execute(['id' => $data['id']]);
-
+        $this->prayerRepo->approve($data['id']);
         ErrorHandlerMiddleware::addMessage('Prayer request approved.');
 
-        return $response
-                ->withHeader('Location', '/moderate/requests')
-                ->withStatus(302);
+        return $response->withHeader('Location', '/moderate/requests/prayers')->withStatus(302);
     }
 
     public function unapprovePrayer(Request $request, Response $response, $args)
-    { 
-        $stmt = $this->db->prepare("
-            UPDATE prayers 
-            SET approved = FALSE 
-            WHERE id = :id
-        ");
-        $stmt->execute(['id' => $args['id']]);
-
+    {
+        $this->prayerRepo->unapprove($args['id']);
         ErrorHandlerMiddleware::addMessage('Prayer request unapproved.');
 
-        return $response
-                ->withHeader('Location', '/moderate/requests')
-                ->withStatus(302);
+        return $response->withHeader('Location', '/moderate/requests/prayers')->withStatus(302);
     }
 
     public function denyPrayer(Request $request, Response $response, $args)
     {
         $data = $request->getParsedBody();
-        $stmt = $this->db->prepare("
-            DELETE FROM prayers 
-            WHERE id = :id
-        ");
-        $stmt->execute(['id' => $data['id']]);
-
+        $this->prayerRepo->delete($data['id']);
         ErrorHandlerMiddleware::addMessage('Prayer removed.');
 
-        return $response
-                ->withHeader('Location', '/moderate/requests')
-                ->withStatus(302);
+        return $response->withHeader('Location', '/moderate/requests/prayers')->withStatus(302);
+    }
+
+    public function showPraiseRequests(Request $request, Response $response, $args)
+    {
+        $unapproved = $this->praiseRepo->getUnapproved();
+        return $this->view->render($response, 'backend/moderate/praise_requests.twig', [
+            'unapproved' => $unapproved
+        ]);
+    }
+
+    public function approvePraise(Request $request, Response $response, $args)
+    {
+        $data = $request->getParsedBody();
+        $this->praiseRepo->approve($data['id']);
+        ErrorHandlerMiddleware::addMessage('Praise request approved.');
+
+        return $response->withHeader('Location', '/moderate/requests/praises')->withStatus(302);
+    }
+
+    public function unapprovePraise(Request $request, Response $response, $args)
+    {
+        $this->praiseRepo->unapprove($args['id']);
+        ErrorHandlerMiddleware::addMessage('Praise request unapproved.');
+
+        return $response->withHeader('Location', '/moderate/requests/praises')->withStatus(302);
+    }
+
+    public function denyPraise(Request $request, Response $response, $args)
+    {
+        $data = $request->getParsedBody();
+        $this->praiseRepo->delete($data['id']);
+        ErrorHandlerMiddleware::addMessage('Praise removed.');
+
+        return $response->withHeader('Location', '/moderate/requests/praises')->withStatus(302);
     }
 }

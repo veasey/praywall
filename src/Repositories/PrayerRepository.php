@@ -60,6 +60,17 @@ class PrayerRepository
         ];
     }
 
+    public function getUnapproved()
+    {
+        $stmt = $this->db->query("
+            SELECT * 
+            FROM prayers 
+            WHERE approved = FALSE
+            ORDER BY created_at DESC
+        ");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     public function getTotalApprovedPrayersCount(): int
     {
@@ -67,7 +78,7 @@ class PrayerRepository
         return (int) $stmt->fetchColumn();
     }
 
-    public function insertPrayerRequest(string $title, string $body, int $userId): void
+    public function insert(string $title, string $body, int $userId): void
     {
         $stmt = $this->db->prepare("
             INSERT INTO prayers (title, body, user_id) 
@@ -80,23 +91,33 @@ class PrayerRepository
         ]);
     }
 
-    public function approvePrayerRequest(int $id): void
+    public function approve(int $id): bool
     {
         $stmt = $this->db->prepare("
             UPDATE prayers 
             SET approved = TRUE 
             WHERE id = :id
         ");
-        $stmt->execute([':id' => $id]);
+        return $stmt->execute([':id' => $id]);
     }
 
-    public function deletePrayerRequest(int $id): void
+    public function unapprove(int $id): bool
+    {
+        $stmt = $this->db->prepare("
+            UPDATE prayers 
+            SET approved = FALSE 
+            WHERE id = :id
+        ");
+        return $stmt->execute([':id' => $id]);
+    }
+
+    public function delete(int $id): bool
     {
         $stmt = $this->db->prepare("
             DELETE FROM prayers 
             WHERE id = :id
         ");
-        $stmt->execute([':id' => $id]);
+        return $stmt->execute([':id' => $id]);
     }
 
     public function togglePrayed(int $userId, int $prayerId): void

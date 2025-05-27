@@ -1,7 +1,18 @@
 {% extends "base.twig" %}
 
 {% block content %}
-    
+
+  {{ include('partials/tab_bar.twig') }}  
+
+  {% if currentTab == 'prayers' %}
+    <div class="inline-toggle">
+      <label>
+        <input type="checkbox" id="toggle-inline-praises" checked>
+        Show inline praises
+      </label>
+    </div>S
+  {% endif %}
+
   <div class="flex-box">
     <h1>Prayers</h1>
 
@@ -18,7 +29,7 @@
 
       {% if user and user.role != 'user' %}
         <div class="unapprove-button">
-          <a href="/moderate/unapprove/{{prayer.id}}">Unapprove</a>
+          <a href="/moderate/unapprove/prayer/{{prayer.id}}">Unapprove</a>
         </div>
       {% endif %}
 
@@ -44,6 +55,18 @@
         <p class="date">
           {{ prayer.created_at|date("F jS \\a\\t g:ia")  }}
         </p>
+
+        {% if prayer.praises and prayer.praises|length > 0 %}
+          <div class="inline-praises" data-linked-to="{{ prayer.id }}">
+            <strong>Praise Reports:</strong>
+            <ul>
+              {% for praise in prayer.praises %}
+                <li><strong>{{ praise.title }}</strong>: {{ praise.content }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
       </div>
 
     </div>
@@ -66,5 +89,21 @@
   {% endif %}
 
   {{ include('partials/pagination.twig') }}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('toggle-inline-praises');
+      const praises = document.querySelectorAll('.inline-praises');
+
+      function updateDisplay() {
+        praises.forEach(p => {
+          p.style.display = toggle.checked ? 'block' : 'none';
+        });
+      }
+
+      toggle.addEventListener('change', updateDisplay);
+      updateDisplay();
+    });
+  </script>
 
 {% endblock %}

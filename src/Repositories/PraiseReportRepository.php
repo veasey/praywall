@@ -41,7 +41,7 @@ class PraiseReportRepository
         $total = (int)$countStmt->fetchColumn();
 
         return [
-            'prayers' => $results,
+            'praises' => $results,
             'pagination' => [
                 'total' => $total,
                 'page' => $pagination['page'],
@@ -51,13 +51,24 @@ class PraiseReportRepository
         ];
     }
 
+    public function getUnapproved(): array
+    {
+        $stmt = $this->db->query("
+            SELECT * 
+            FROM praises 
+            WHERE approved = FALSE
+            ORDER BY created_at DESC
+        ");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getTotalApprovedPraiseReportCount(): int
     {
         $stmt = $this->db->query("SELECT COUNT(*) FROM praises WHERE approved = TRUE");
         return (int) $stmt->fetchColumn();
     }
 
-    public function insertPraiseReportRequest(string $title, string $body, int $userId): void
+    public function insert(string $title, string $body, int $userId): void
     {
         $stmt = $this->db->prepare("
             INSERT INTO praises (title, body, user_id) 
@@ -70,22 +81,32 @@ class PraiseReportRepository
         ]);
     }
 
-    public function approvePraiseReportRequest(int $id): void
+    public function approve(int $id): bool
     {
         $stmt = $this->db->prepare("
             UPDATE praises 
             SET approved = TRUE 
             WHERE id = :id
         ");
-        $stmt->execute([':id' => $id]);
+        return $stmt->execute([':id' => $id]);
     }
 
-    public function deletePraiseReportRequest(int $id): void
+    public function unapprove(int $id): bool
+    {
+        $stmt = $this->db->prepare("
+            UPDATE praises 
+            SET approved = TRUE 
+            WHERE id = :id
+        ");
+        return $stmt->execute([':id' => $id]);
+    }
+
+    public function delete(int $id): bool
     {
         $stmt = $this->db->prepare("
             DELETE FROM praises 
             WHERE id = :id
         ");
-        $stmt->execute([':id' => $id]);
+        return $stmt->execute([':id' => $id]);
     }
 }
