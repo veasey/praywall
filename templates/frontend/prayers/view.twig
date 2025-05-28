@@ -36,6 +36,14 @@
       <h2>{{ prayer.title }}</h2>
       <p>{{ prayer.body }}</p>
 
+      {% if prayer.praises and prayer.praises|length > 0 %}
+        <div class="inline-praises" data-linked-to="{{ prayer.id }}">
+          {% for praise in prayer.praises %}
+            <p><strong>{{ praise.title }}</strong>: {{ praise.body }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
       <div class="prayer-card-footer">
         {% set prayUrl = "/prayers/pray/" ~ prayer.id ~ "?page=" ~ currentPage ~ "&limit=" ~ (limit|default(10)) ~ "#prayer-" ~ prayer.id %}
         <form method="post" action="{{ prayUrl }}" class="pray-form">
@@ -55,18 +63,6 @@
         <p class="date">
           {{ prayer.created_at|date("F jS \\a\\t g:ia")  }}
         </p>
-
-        {% if prayer.praises and prayer.praises|length > 0 %}
-          <div class="inline-praises" data-linked-to="{{ prayer.id }}">
-            <strong>Praise Reports:</strong>
-            <ul>
-              {% for praise in prayer.praises %}
-                <li><strong>{{ praise.title }}</strong>: {{ praise.content }}</li>
-              {% endfor %}
-            </ul>
-          </div>
-        {% endif %}
-
       </div>
 
     </div>

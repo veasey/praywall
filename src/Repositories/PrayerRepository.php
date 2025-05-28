@@ -44,13 +44,14 @@ class PrayerRepository
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $prayersWithInlinePraises = $this->attachInlinePrayerContent($results);
 
         // Optional: count total approved prayers for pagination UI
         $countStmt = $this->db->query("SELECT COUNT(*) FROM prayers WHERE approved = TRUE");
         $total = (int)$countStmt->fetchColumn();
 
         return [
-            'prayers' => $results,
+            'prayers' => $prayersWithInlinePraises,
             'pagination' => [
                 'total' => $total,
                 'page' => $pagination['page'],
@@ -59,6 +60,33 @@ class PrayerRepository
             ],
         ];
     }
+
+    private function attachInlinePrayerContent(array $prayers): array
+    {
+        if (empty($prayers)) return $prayers;
+
+        $ids = array_column($prayers, 'id');
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $sql = "SELECT id, prayer_id, title, body FROM praises WHERE prayer_id IN ($placeholders)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($ids);
+
+        $praises = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Group praises by prayer_id
+        $praisesByPrayerId = [];
+        foreach ($praises as $praise) {
+            $praisesByPrayerId[$praise['prayer_id']][] = $praise;
+        }
+
+        foreach ($prayers as &$prayer) {
+            $prayer['praises'] = $praisesByPrayerId[$prayer['id']] ?? [];
+        }
+
+        return $prayers;
+    }
+
 
     public function getUnapproved()
     {

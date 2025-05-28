@@ -9,7 +9,7 @@
 ### 🔹 2. Praise Display Logic (30–45 min)
 - [x] Load praises in controller
 - [x] Display praises in `/praises` page 
-  - [ ] or within each prayer (if inline)
+  - [x] or within each prayer (if inline)
 
 ---
 
