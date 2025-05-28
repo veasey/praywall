@@ -87,6 +87,34 @@ class PrayerRepository
         return $prayers;
     }
 
+    public function getAllApproved(): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT p.*
+            FROM prayers p
+            WHERE p.approved = TRUE
+            ORDER BY p.created_at DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllApprovedByUser(int $userId): array
+    {
+        if ($userId <= 0) {
+            return [];
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT p.*
+            FROM prayers p
+            WHERE p.approved = TRUE AND p.user_id = :user_id
+            GROUP BY p.id
+            ORDER BY p.created_at DESC
+        ");
+        $stmt->execute([':user_id' => $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function getUnapproved()
     {

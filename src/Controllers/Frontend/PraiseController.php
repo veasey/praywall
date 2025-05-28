@@ -4,6 +4,7 @@ namespace App\Controllers\Frontend;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Repositories\PraiseReportRepository;
+use App\Repositories\PrayerRepository;
 use App\Repositories\UserRepository;
 use App\Services\Herald;
 use App\Middleware\ErrorHandlerMiddleware;
@@ -15,8 +16,9 @@ class PraiseController
    
     private TWIG $view;
     private PDO $db;
-    private PraiseReportRepository $praiseReportRepository;
-    private UserRepository $userRepository;
+    private PraiseReportRepository $praiseRepo;
+    private PrayerRepository $prayerRepo;
+    private UserRepository $userRepo;
     private Herald $herald;
 
     // Constructor that injects the Twig view service
@@ -27,8 +29,9 @@ class PraiseController
     {
         $this->view = $view;
         $this->db = $db;
-        $this->praiseReportRepository = new PraiseReportRepository($db);
-        $this->userRepository = new UserRepository($db);
+        $this->praiseRepo = new PraiseReportRepository($db);
+        $this->prayerRepo = new PrayerRepository($db);
+        $this->userRepo = new UserRepository($db);
         $this->herald = $herald;
     }
 
@@ -48,7 +51,7 @@ class PraiseController
             'order' => $order,
             'offset' => $offset
         ];
-        $paginatedPrayers = $this->praiseReportRepository->getApprovedPraiseReportsWithPrayedCountPaginated($queryParams, $userId);
+        $paginatedPrayers = $this->praiseRepo->getApprovedPraiseReportsWithPrayedCountPaginated($queryParams, $userId);
         return $this->view->render($response, 'frontend/praise_reports/view.twig', $paginatedPrayers);
     }
 
@@ -69,7 +72,7 @@ class PraiseController
                 }
             }
 
-            $this->praiseReportRepository->insert(
+            $this->praiseRepo->insert(
                 $data['title'],
                 $data['body'],
                 $_SESSION['user']['id']
@@ -90,12 +93,19 @@ class PraiseController
             ]);
         }
 
-        return $this->view->render($response, 'frontend/prayers/request.twig');
+        
+        $userId = $_SESSION['user']['id'] ?? 0;
+        $userRole = $_SESSION['user']['role'] ?? 'user';
+        $parentPrayers = ($userRole != 'user') ? $this->prayerRepo->getAllApproved() : $this->prayerRepo->getAllApprovedByUser($userId);
+ 
+        return $this->view->render($response, 'frontend/praise_reports/request.twig', [
+            'prayers' => $parentPrayers,
+        ]);
     }
 
     private function notifyModerators($title, $description, $approved)
     {   
-        $moderators = $this->userRepository->getModeratorsToNotifyOnNewPrayer();
+        $moderators = $this->userRepo->getModeratorsToNotifyOnNewPrayer();
         foreach ($moderators as $moderator) {
             // Send email to each moderator
             $this->herald->proclaim(
@@ -108,7 +118,7 @@ class PraiseController
 
     public function approvePraiseReport(Request $request, Response $response, $args)
     {
-        $this->praiseReportRepository->approvePraiseReportRequest($args['id']);
+        $this->praiseRepo->approve($args['id']);
         // Redirect to the prayers list
         return $response
                 ->withHeader('Location', '/praises')
@@ -117,7 +127,7 @@ class PraiseController
 
     public function deletePraiseReport(Request $request, Response $response, $args)
     {
-        $this->praiseReportRepository->deletePraiseReportRequest($args['id']);
+        $this->praiseRepo->delete($args['id']);
         // Redirect to the prayers list
         return $response
                 ->withHeader('Location', '/praises')

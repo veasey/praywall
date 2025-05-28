@@ -1,0 +1,27 @@
+{% extends "base.twig" %}
+
+{% block title %}Praise Report Form{% endblock %}
+
+{% block content %}
+    
+  <h1>Praise Report Form</h1>
+  
+  <form action="/praises/report" method="POST">
+    <label for="prayer_id">Related Prayer:</label><br>
+    <select name="prayer_id" id="prayer_id" required>
+      <option value="">-- Select a Prayer --</option>
+      {% for prayer in prayers %}
+        <option value="{{ prayer.id }}">{{ prayer.title|e }}</option>
+      {% endfor %}
+    </select><br><br>
+
+    <label for="title">Headline:</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+
+    <label for="body">Your Praise Report:</label><br>
+    <textarea id="body" name="body" rows="5" required></textarea><br><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+{% endblock %}
