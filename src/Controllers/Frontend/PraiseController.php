@@ -52,7 +52,7 @@ class PraiseController
         return $this->view->render($response, 'frontend/praise_reports/view.twig', $paginatedPrayers);
     }
 
-    public function praiseReportRequest(Request $request, Response $response, $args)
+    public function praiseReport(Request $request, Response $response, $args)
     {
         // Handle the prayer request form submission
         if ($request->getMethod() === 'POST') {
@@ -69,7 +69,7 @@ class PraiseController
                 }
             }
 
-            $this->praiseReportRepository->insertPraiseReportRequest(
+            $this->praiseReportRepository->insert(
                 $data['title'],
                 $data['body'],
                 $_SESSION['user']['id']

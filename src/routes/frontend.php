@@ -22,6 +22,12 @@ return function (App $app) {
         $group->post('/pray/{id}', [PrayerController::class, 'pray']);
     })->add(new AuthMiddleware());
 
+    // Praise Reports
+    $app->group('/praises', function ($group) {
+        $group->get('/report', [PraiseController::class, 'praiseReport']);
+        $group->post('/report', [PraiseController::class, 'praiseReport']);
+    })->add(new AuthMiddleware());
+
     // Logon Form
     $app->get('/login', [AuthController::class, 'showLoginForm']);
     $app->post('/login', [AuthController::class, 'login']);

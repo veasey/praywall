@@ -15,14 +15,21 @@
 
 ## Phase 2: Frontend Tabs + Inline Toggle (1.5 hrs)
 
+### 🔹 Praise Reporting (1 hr) 
+- [ ] Add "Cancel" or "Back" to report forms and prayer request form
+- [ ] Get prayers for current user (or all if admin / mod)
+- [ ] Add parent prayer.
+- [ ] Submit test
+- [ ] Test approve and deny
+
 ### 🔹 3. Prayer/Praise Tab UI (1 hr)
-- [ ] Add top navigation tabs: `Prayers | Praises`
+- [x] Add top navigation tabs: `Prayers | Praises`
 - [x] Use CSS to highlight active tab
 - [x] Switch content based on route: `/prayers` vs `/praises`
 
 ### 🔹 4. “Show Inline Praises” Toggle (30 min)
-- [ ] Add toggle switch to Prayer tab (default: ON)
-- [ ] Show associated praises beneath prayer cards
+- [x] Add toggle switch to Prayer tab (default: ON)
+- [x] Show associated praises beneath prayer cards
 - [ ] Persist toggle state (via localStorage or query param)
 
 ---
