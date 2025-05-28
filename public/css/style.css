@@ -15,7 +15,7 @@ h1, h2, h3 {
 .container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0.25em;
 }
 
 /* ========== Form Elements ========== */
@@ -206,7 +206,6 @@ button:hover {
 /* ========== Tabs ========== */
 .tab-bar {
   display: flex;
-  margin-bottom: 2rem;
   border-radius: 12px 12px 0 0;
   overflow: hidden;
   background-color: #f0f4f8;
@@ -216,24 +215,23 @@ button:hover {
 .tab {
   flex: 1;
   text-align: center;
-  padding: 1.5rem 0;
+  padding: 1rem 0;
   font-size: 1.25rem;
   font-weight: 600;
   text-decoration: none;
   color: #333;
-  background-color: #e2e8f0;
+  background-color: #b7bcc4;
   transition: all 0.3s ease;
   border: none;
 }
 
-.tab:hover {
-  background-color: #d1dbe8;
+.tab.active {
+  background-color: #f0f4f8;
 }
 
-.tab.active {
-  background-color: #007BFF;
-  color: white;
-  box-shadow: inset 0 -4px 0 #0056b3;
+.tab-container {
+  padding: 0.25em;
+  background-color: #f0f4f8;
 }
 
 .inline-toggle {

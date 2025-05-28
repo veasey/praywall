@@ -17,8 +17,8 @@
 
 ### 🔹 3. Prayer/Praise Tab UI (1 hr)
 - [ ] Add top navigation tabs: `Prayers | Praises`
-- [ ] Use CSS to highlight active tab
-- [ ] Switch content based on route: `/prayers` vs `/praises`
+- [x] Use CSS to highlight active tab
+- [x] Switch content based on route: `/prayers` vs `/praises`
 
 ### 🔹 4. “Show Inline Praises” Toggle (30 min)
 - [ ] Add toggle switch to Prayer tab (default: ON)
