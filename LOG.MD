@@ -30,7 +30,7 @@
 ### 🔹 4. “Show Inline Praises” Toggle (30 min)
 - [x] Add toggle switch to Prayer tab (default: ON)
 - [x] Show associated praises beneath prayer cards
-- [ ] Persist toggle state (via localStorage or query param)
+- [x] Persist toggle state (via localStorage or query param)
 
 ---
 
