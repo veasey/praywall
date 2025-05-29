@@ -16,7 +16,7 @@
 ## Phase 2: Frontend Tabs + Inline Toggle (1.5 hrs)
 
 ### 🔹 Praise Reporting (1 hr) 
-- [ ] Add "Cancel" or "Back" to report forms and prayer request form
+- [x] Add "Cancel" or "Back" to report forms and prayer request form
 - [ ] Get prayers for current user (or all if admin / mod)
 - [ ] Add parent prayer.
 - [ ] Submit test
