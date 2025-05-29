@@ -94,13 +94,24 @@
       const toggle = document.getElementById('toggle-inline-praises');
       const praises = document.querySelectorAll('.inline-praises');
 
+      // Restore saved state
+      const saved = localStorage.getItem('praiseVisible');
+      if (saved !== null) {
+        toggle.checked = saved === 'true';
+      }
+
       function updateDisplay() {
         praises.forEach(p => {
           p.style.display = toggle.checked ? 'block' : 'none';
         });
       }
 
-      toggle.addEventListener('change', updateDisplay);
+      function togglePraiseVisible() {
+        localStorage.setItem('praiseVisible', toggle.checked ? 'true' : 'false');
+        updateDisplay();
+      }
+
+      toggle.addEventListener('change', togglePraiseVisible);
       updateDisplay();
     });
   </script>
