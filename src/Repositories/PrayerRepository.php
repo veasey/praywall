@@ -68,7 +68,16 @@ class PrayerRepository
         $ids = array_column($prayers, 'id');
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
-        $sql = "SELECT id, prayer_id, title, body FROM praises WHERE prayer_id IN ($placeholders)";
+        $sql = "
+            SELECT 
+                id, 
+                prayer_id, 
+                title, 
+                body 
+            FROM praises 
+            WHERE prayer_id IN ($placeholders)
+            AND approved = TRUE
+        ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute($ids);
 
@@ -134,16 +143,17 @@ class PrayerRepository
         return (int) $stmt->fetchColumn();
     }
 
-    public function insert(string $title, string $body, int $userId): void
+    public function insert(string $title, string $body, int $userId, int $approved): void
     {
         $stmt = $this->db->prepare("
-            INSERT INTO prayers (title, body, user_id) 
-            VALUES (:title, :body, :user_id)
+            INSERT INTO prayers (title, body, user_id, approved) 
+            VALUES (:title, :body, :user_id, :approved)
         ");
         $stmt->execute([
             ':title' => $title,
             ':body' => $body,
-            ':user_id' => $userId
+            ':user_id' => $userId,
+            ':approved' => $approved ? 1 : 0
         ]);
     }
 

@@ -8,6 +8,7 @@ use App\Repositories\PrayerRepository;
 use App\Repositories\UserRepository;
 use App\Services\Herald;
 use App\Middleware\ErrorHandlerMiddleware;
+use App\Middleware\AuthMiddleware;
 use Slim\Views\Twig;
 use PDO;
 
@@ -20,12 +21,17 @@ class PraiseController
     private PrayerRepository $prayerRepo;
     private UserRepository $userRepo;
     private Herald $herald;
+    private ErrorHandlerMiddleware $errorHandler;
+    private AuthMiddleware $authMiddleware;
+
 
     // Constructor that injects the Twig view service
     public function __construct(
         Twig $view, 
         PDO $db, 
-        Herald $herald)
+        Herald $herald,
+        ErrorHandlerMiddleware $errorHandler,
+        AuthMiddleware $authMiddleware)
     {
         $this->view = $view;
         $this->db = $db;
@@ -33,6 +39,8 @@ class PraiseController
         $this->prayerRepo = new PrayerRepository($db);
         $this->userRepo = new UserRepository($db);
         $this->herald = $herald;
+        $this->errorHandler = $errorHandler;
+        $this->authMiddleware = $authMiddleware;
     }
 
     public function listPraiseReports(Request $request, Response $response, $args)
@@ -61,21 +69,23 @@ class PraiseController
         if ($request->getMethod() === 'POST') {
             $data = $request->getParsedBody();
 
-            // Default: not approved
-            $approved = false;
-
             // Check if user is moderator or admin
-            if (isset($_SESSION['user']) && isset($_SESSION['user']['role'])) {
-                $role = $_SESSION['user']['role'];
-                if ($role === 'admin' || $role === 'moderator') {
-                    $approved = true;
-                }
+            $role = $this->authMiddleware->getUserRole();
+            $approved = ($role === 'admin' || $role === 'moderator') ? true : false;
+
+            $userId = $this->authMiddleware->getUserId();
+            if (!$userId) {
+                return $response
+                    ->withHeader('Location', '/login')
+                    ->withStatus(302);
             }
 
             $this->praiseRepo->insert(
                 $data['title'],
                 $data['body'],
-                $_SESSION['user']['id']
+                $userId,
+                $data['prayer_id'] ?? null,
+                $approved
             );
 
             // Send email notification to the admin
@@ -88,12 +98,11 @@ class PraiseController
 
             // Render a confirmation page
             return $this->view->render($response, 'frontend/praise_reports/request_success.twig', [
-                'message' => 'Your prayer request has been submitted.',
+                'message' => $message,
                 'home_url' => '/praises'
             ]);
         }
 
-        
         $userId = $_SESSION['user']['id'] ?? 0;
         $userRole = $_SESSION['user']['role'] ?? 'user';
         $parentPrayers = ($userRole != 'user') ? $this->prayerRepo->getAllApproved() : $this->prayerRepo->getAllApprovedByUser($userId);

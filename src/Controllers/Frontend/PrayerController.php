@@ -86,10 +86,11 @@ class PrayerController
                 }
             }
 
-            $this->prayerRepository->insertPrayerRequest(
+            $this->prayerRepository->insert(
                 $data['title'],
                 $data['body'],
-                $_SESSION['user']['id']
+                $_SESSION['user']['id'],
+                $approved ? null : 0 // Set user_id to null if approved, otherwise 0
             );
 
             // Send email notification to the admin
@@ -125,7 +126,7 @@ class PrayerController
 
     public function approvePrayer(Request $request, Response $response, $args)
     {
-        $this->prayerRepository->approvePrayerRequest($args['id']);
+        $this->prayerRepository->approve($args['id']);
         // Redirect to the prayers list
         return $response
                 ->withHeader('Location', '/prayers')
@@ -134,7 +135,7 @@ class PrayerController
 
     public function deletePrayer(Request $request, Response $response, $args)
     {
-        $this->prayerRepository->deletePrayerRequest($args['id']);
+        $this->prayerRepository->delete($args['id']);
         // Redirect to the prayers list
         return $response
                 ->withHeader('Location', '/prayers')

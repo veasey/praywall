@@ -68,18 +68,20 @@ class PraiseReportRepository
         return (int) $stmt->fetchColumn();
     }
 
-    public function insert(string $title, string $body, int $userId): void
+    public function insert(string $title, string $body, ?int $userId, int $prayerId, int $approved): bool
     {
         $stmt = $this->db->prepare("
-            INSERT INTO praises (title, body, user_id) 
-            VALUES (:title, :body, :user_id)
+            INSERT INTO praises (title, body, user_id, prayer_id, approved) 
+            VALUES (:title, :body, :user_id, :prayer_id, :approved)
         ");
-        $stmt->execute([
-            ':title' => $title,
-            ':body' => $body,
-            ':user_id' => $userId
-        ]);
+        $stmt->bindValue(':title', $title);
+        $stmt->bindValue(':body', $body);
+        $stmt->bindValue(':user_id', $userId, $userId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':prayer_id', $prayerId);
+        $stmt->bindValue(':approved', $approved, PDO::PARAM_BOOL);
+        return $stmt->execute();
     }
+
 
     public function approve(int $id): bool
     {
@@ -95,7 +97,7 @@ class PraiseReportRepository
     {
         $stmt = $this->db->prepare("
             UPDATE praises 
-            SET approved = TRUE 
+            SET approved = FALSE 
             WHERE id = :id
         ");
         return $stmt->execute([':id' => $id]);

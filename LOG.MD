@@ -17,10 +17,10 @@
 
 ### 🔹 Praise Reporting (1 hr) 
 - [x] Add "Cancel" or "Back" to report forms and prayer request form
-- [ ] Get prayers for current user (or all if admin / mod)
-- [ ] Add parent prayer.
-- [ ] Submit test
-- [ ] Test approve and deny
+- [x] Get prayers for current user (or all if admin / mod)
+- [x] Add parent prayer.
+- [x] Submit test
+- [x] Test approve and deny
 
 ### 🔹 3. Prayer/Praise Tab UI (1 hr)
 - [x] Add top navigation tabs: `Prayers | Praises`

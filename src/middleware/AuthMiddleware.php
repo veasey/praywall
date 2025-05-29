@@ -21,4 +21,19 @@ class AuthMiddleware
 
         return $handler->handle($request);
     }
+
+    public function isAuthenticated(): bool
+    {
+        return isset($_SESSION['user']);
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->isAuthenticated() ? (int)$_SESSION['user']['id'] : null;
+    }
+
+    public function getUserRole(): ?string
+    {
+        return $this->isAuthenticated() ? $_SESSION['user']['role'] : null;
+    }
 }
