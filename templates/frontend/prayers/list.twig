@@ -1,0 +1,119 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+  {% set currentTab = 'prayers' %}
+  {{ include('partials/tab_bar.twig') }}  
+  <div class="tab-container">
+
+    {% if currentTab == 'prayers' %}
+      <div class="inline-toggle">
+        <label>
+          <input type="checkbox" id="toggle-inline-praises" checked>
+          Show inline praises
+        </label>
+      </div>
+    {% endif %}
+
+    <div class="flex-box">
+      <h1>Prayers</h1>
+
+      <!-- Button to submit a new prayer -->
+      <div>
+        <a href="/prayers/request">
+          <button style="margin-top: 0" type="button">Submit a Request for Prayer</button>
+        </a>
+      </div>
+    </div>
+
+    {% for prayer in prayers %}
+      <div class="prayer-card" id="prayer-{{ prayer.id }}">
+
+        {% if user and user.role != 'user' %}
+          <div class="unapprove-button">
+            <a href="/moderate/unapprove/prayer/{{prayer.id}}">Unapprove</a>
+          </div>
+        {% endif %}
+
+        <h2>{{ prayer.title }}</h2>
+        <p>{{ prayer.body }}</p>
+
+        {% if prayer.praises and prayer.praises|length > 0 %}
+          <div class="inline-praises" data-linked-to="{{ prayer.id }}">
+            {% for praise in prayer.praises %}
+              <p><strong>{{ praise.title }}</strong>: {{ praise.body }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="prayer-card-footer">
+          {% set prayUrl = "/prayers/pray/" ~ prayer.id ~ "?page=" ~ currentPage ~ "&limit=" ~ (limit|default(10)) ~ "#prayer-" ~ prayer.id %}
+          <form method="post" action="{{ prayUrl }}" class="pray-form">
+            <button 
+              type="submit" 
+              class="pray-button {% if prayer.has_prayed %}prayed{% else %}not-prayed{% endif %}"
+            >
+              🙏 
+              {% if prayer.has_prayed %}
+                You prayed ({{ prayer.prayed_count }})
+              {% else %}
+                Pray ({{ prayer.prayed_count > 0 ? prayer.prayed_count : '0' }})
+              {% endif %}
+            </button>
+          </form>
+
+          <p class="date">
+            {{ prayer.created_at|date("F jS \\a\\t g:ia")  }}
+          </p>
+        </div>
+
+      </div>
+    {% else %}
+      <p>No prayers yet.</p>
+    {% endfor %}
+
+    {% if totalPages > 1 %}
+      <nav class="pagination-controls">
+        {% if currentPage > 1 %}
+          <a href="?page={{ currentPage - 1 }}&order={{ order|default('desc') }}&limit={{ limit|default(10) }}">&laquo; Previous</a>
+        {% endif %}
+
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+        {% if currentPage < totalPages %}
+          <a href="?page={{ currentPage + 1 }}&order={{ order|default('desc') }}&limit={{ limit|default(10) }}">Next &raquo;</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+
+    {{ include('partials/pagination.twig') }}
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('toggle-inline-praises');
+      const praises = document.querySelectorAll('.inline-praises');
+
+      // Restore saved state
+      const saved = localStorage.getItem('praiseVisible');
+      if (saved !== null) {
+        toggle.checked = saved === 'true';
+      }
+
+      function updateDisplay() {
+        praises.forEach(p => {
+          p.style.display = toggle.checked ? 'block' : 'none';
+        });
+      }
+
+      function togglePraiseVisible() {
+        localStorage.setItem('praiseVisible', toggle.checked ? 'true' : 'false');
+        updateDisplay();
+      }
+
+      toggle.addEventListener('change', togglePraiseVisible);
+      updateDisplay();
+    });
+  </script>
+
+{% endblock %}

@@ -112,4 +112,16 @@ class PraiseReportRepository
         ");
         return $stmt->execute([':id' => $id]);
     }
+
+    public function getPraiseWithPrayerId(int $prayerId): ?array
+    {
+        $stmt = $this->db->prepare("
+            SELECT * 
+            FROM praises 
+            WHERE prayer_id = :prayer_id
+        ");
+        $stmt->bindValue(':prayer_id', $prayerId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? null;
+    }
 }

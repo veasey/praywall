@@ -4,10 +4,13 @@ namespace App\Controllers\Frontend;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Repositories\PrayerRepository;
+use App\Repositories\PraiseReportRepository;
+use App\Repositories\UserPrayerRepository;
 use App\Repositories\UserRepository;
 use App\Services\Herald;
 use App\Middleware\ErrorHandlerMiddleware;
 use App\Middleware\AuthMiddleware;
+use Error;
 use Slim\Views\Twig;
 use PDO;
 
@@ -33,8 +36,10 @@ class PrayerController
 
     private TWIG $view;
     private PDO $db;
-    private PrayerRepository $prayerRepository;
-    private UserRepository $userRepository;
+    private PrayerRepository $prayerRepo;
+    private PraiseReportRepository $praiseRepo;
+    private UserPrayerRepository $userPrayerRepo;
+    private UserRepository $userRepo;
 
     private Herald $herald;
     private ErrorHandlerMiddleware $errorHandler;
@@ -48,8 +53,10 @@ class PrayerController
     {
         $this->view = $view;
         $this->db = $db;
-        $this->prayerRepository = new PrayerRepository($db);
-        $this->userRepository = new UserRepository($db);
+        $this->prayerRepo = new PrayerRepository($db);
+        $this->praiseRepo = new PraiseReportRepository($db);
+        $this->userPrayerRepo = new UserPrayerRepository($db);
+        $this->userRepo = new UserRepository($db);
         $this->herald = $herald;
         $this->errorHandler = new ErrorHandlerMiddleware();
         $this->authMiddleware = new AuthMiddleware();
@@ -77,8 +84,31 @@ class PrayerController
             'order' => $order,
             'offset' => $offset
         ];
-        $paginatedPrayers = $this->prayerRepository->getApprovedPrayersWithPrayedCountPaginated($queryParams, $userId);
-        return $this->view->render($response, 'frontend/prayers/view.twig', $paginatedPrayers);
+        $paginatedPrayers = $this->prayerRepo->getApprovedPrayersWithPrayedCountPaginated($queryParams, $userId);
+        return $this->view->render($response, 'frontend/prayers/list.twig', $paginatedPrayers);
+    }
+
+    public function viewPrayer(Request $request, Response $response, $args)
+    {
+        $prayerId = (int)$args['id'];
+       
+        // Get the prayer details
+        $prayer = $this->prayerRepo->getPrayerById($prayerId);
+        if (!$prayer) {
+            $this->errorHandler->addError(new Error("Prayer not found"));
+            return $response
+                ->withHeader('Location', '/prayers')
+                ->withStatus(404);
+        }
+
+        $praises = $this->praiseRepo->getPraiseWithPrayerId($prayerId);
+        $userPrayers = $this->userPrayerRepo->getPrayersForPrayer($prayerId);
+
+        return $this->view->render($response, 'frontend/prayers/view.twig', [
+            'prayer' => $prayer,
+            'praises' => $praises,
+            'user_prayers' => $userPrayers
+        ]);
     }
 
     public function prayerRequest(Request $request, Response $response, $args)
@@ -98,7 +128,7 @@ class PrayerController
                 }
             }
 
-            $this->prayerRepository->insert(
+            $this->prayerRepo->insert(
                 $data['title'],
                 $data['body'],
                 $_SESSION['user']['id'],
@@ -125,7 +155,7 @@ class PrayerController
 
     private function notifyModerators($title, $description, $approved)
     {   
-        $moderators = $this->userRepository->getModeratorsToNotifyOnNewPrayer();
+        $moderators = $this->userRepo->getModeratorsToNotifyOnNewPrayer();
         foreach ($moderators as $moderator) {
             // Send email to each moderator
             $this->herald->proclaim(
@@ -138,7 +168,7 @@ class PrayerController
 
     public function approvePrayer(Request $request, Response $response, $args)
     {
-        $this->prayerRepository->approve($args['id']);
+        $this->prayerRepo->approve($args['id']);
         // Redirect to the prayers list
         return $response
                 ->withHeader('Location', '/prayers')
@@ -147,7 +177,7 @@ class PrayerController
 
     public function deletePrayer(Request $request, Response $response, $args)
     {
-        $this->prayerRepository->delete($args['id']);
+        $this->prayerRepo->delete($args['id']);
         // Redirect to the prayers list
         return $response
                 ->withHeader('Location', '/prayers')
@@ -168,7 +198,7 @@ class PrayerController
         $prayerId = $args['id'];
         $pageSize = max(1, min(100, (int)($request->getQueryParams()['limit'] ?? 10)));
 
-        $this->prayerRepository->togglePrayed($userId, $prayerId);
+        $this->prayerRepo->togglePrayed($userId, $prayerId);
         
         // get redirect query param
         $queryParams = http_build_query([

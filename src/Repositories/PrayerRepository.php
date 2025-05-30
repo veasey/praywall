@@ -219,4 +219,15 @@ class PrayerRepository
             ]);
         }
     }
+
+    public function getPrayerById(int $id): ?array
+    {
+        $stmt = $this->db->prepare("
+            SELECT * 
+            FROM prayers 
+            WHERE id = :id
+        ");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
 }

@@ -18,26 +18,7 @@
     </div>
 
     {% for praise in praises %}
-      <div class="prayer-card" id="prayer-{{ praise.id }}">
-
-        {% if user and user.role != 'user' %}
-          <div class="unapprove-button">
-            <a href="/moderate/unapprove/praise/{{praise.id}}">Unapprove</a>
-          </div>
-        {% endif %}
-
-        <h2>{{ praise.title }}</h2>
-        <p>{{ praise.body }}</p>
-
-        <div class="prayer-card-footer">
-
-          <p class="date">
-            {{ praise.created_at|date("F jS \\a\\t g:ia")  }}
-          </p>
-
-        </div>
-
-      </div>
+      {{ include('partials/praise/card.twig') }}
     {% else %}
       <p>No praise reports yet.</p>
     {% endfor %}

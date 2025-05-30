@@ -35,16 +35,10 @@
 ---
 
 ## Phase 3: Stability + UX Polish (2–2.5 hrs)
-
-### 🔹 7. Polish + Seed Data (1 hr)
-- [ ] Format dates and tidy card layout
-- [ ] Smoke test: submit, display, navigate, unapprove, toggle views
-
 ---
 
 ## 🚀 Bonus (Optional if Time Allows)
 - [ ] Link from each prayer to its praises (anchor or modal)
-- [ ] Flash messages for praise submission success/failure
 - [ ] Improve mobile layout and responsiveness
 
 
@@ -66,7 +60,6 @@
 ---
 
 ## 🙏 Praise Requests
-- [ ] Enable users to request praise on answered prayers
 - [ ] (Optional) Convert a prayer to praise from the prayer card
 - [ ] Moderator approval flow for praise requests
 

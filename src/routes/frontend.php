@@ -12,17 +12,20 @@ return function (App $app) {
 
     // Home Page    
     $app->get('/', [PrayerController::class, 'listPrayers']);
-    $app->get('/prayers', [PrayerController::class, 'listPrayers']);
-    $app->get('/praises', [PraiseController::class, 'listPraiseReports']);
-
-    // communial prayer
+    
+    // prayer requests
     $app->group('/prayers', function ($group) {
-        $group->get('/request', [PrayerController::class, 'prayerRequest']);
-        $group->post('/request', [PrayerController::class, 'prayerRequest']);
-        $group->post('/pray/{id}', [PrayerController::class, 'pray']);
-    })->add(new AuthMiddleware());
+        // communial prayer
+        $group->get('/request', [PrayerController::class, 'prayerRequest'])->add(new AuthMiddleware());
+        $group->post('/request', [PrayerController::class, 'prayerRequest'])->add(new AuthMiddleware());
+        $group->post('/pray/{id}', [PrayerController::class, 'pray'])->add(new AuthMiddleware());
+
+        $group->get('', [PrayerController::class, 'listPrayers']);
+        $group->get('/{id}', [PrayerController::class, 'viewPrayer']);
+    });
 
     // Praise Reports
+    $app->get('/praises', [PraiseController::class, 'listPraiseReports']);
     $app->group('/praises', function ($group) {
         $group->get('/report', [PraiseController::class, 'praiseReport']);
         $group->post('/report', [PraiseController::class, 'praiseReport']);
