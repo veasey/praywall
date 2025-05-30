@@ -1,8 +1,8 @@
 <form method="get" class="pagination-options">
     <label for="order">Sort:</label>
     <select name="order" id="order" onchange="this.form.submit()">
-        <option value="desc" {{ pagination.order == 'desc' ? 'selected' : '' }}>Newest first</option>
-        <option value="asc" {{ pagination.order == 'asc' ? 'selected' : '' }}>Oldest first</option>
+        <option value="DESC" {{ pagination.order == 'DESC' ? 'selected' : '' }}>Newest first</option>
+        <option value="ASC" {{ pagination.order == 'ASC' ? 'selected' : '' }}>Oldest first</option>
     </select>
 
     <label for="limit">Show:</label>

@@ -39,8 +39,8 @@ class PrayerRepository
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $pagination['limit'], PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $pagination['offset'], PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $queryParams['limit'], PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $queryParams['offset'], PDO::PARAM_INT);
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -57,6 +57,7 @@ class PrayerRepository
                 'page' => $pagination['page'],
                 'limit' => $pagination['limit'],
                 'offset' => $pagination['offset'],
+                'order' => $pagination['direction']
             ],
         ];
     }

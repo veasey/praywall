@@ -50,16 +50,14 @@ class PraiseController
         $pageSize = max(1, min(100, (int)($params['limit'] ?? 10)));
         $offset = ($page - 1) * $pageSize;
 
-        $userId = $_SESSION['user']['id'] ?? 0;
-        $order = in_array(strtolower($params['order'] ?? ''), ['asc', 'desc']) ? strtolower($params['order']) : 'desc';
-
         $queryParams = [
             'page' => $page,
             'limit' => $pageSize,
-            'order' => $order,
-            'offset' => $offset
+            'dir' => $params['order'] ?? 'DESC',
+            'offset' => $offset,
+            
         ];
-        $paginatedPrayers = $this->praiseRepo->getApprovedPraiseReportsWithPrayedCountPaginated($queryParams, $userId);
+        $paginatedPrayers = $this->praiseRepo->getApprovedPraiseReportsWithPrayedCountPaginated($queryParams);
         return $this->view->render($response, 'frontend/praise_reports/view.twig', $paginatedPrayers);
     }
 

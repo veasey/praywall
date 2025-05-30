@@ -7,6 +7,7 @@ use App\Repositories\PrayerRepository;
 use App\Repositories\UserRepository;
 use App\Services\Herald;
 use App\Middleware\ErrorHandlerMiddleware;
+use App\Middleware\AuthMiddleware;
 use Slim\Views\Twig;
 use PDO;
 
@@ -34,7 +35,10 @@ class PrayerController
     private PDO $db;
     private PrayerRepository $prayerRepository;
     private UserRepository $userRepository;
+
     private Herald $herald;
+    private ErrorHandlerMiddleware $errorHandler;
+    private AuthMiddleware $authMiddleware;
 
     // Constructor that injects the Twig view service
     public function __construct(
@@ -47,6 +51,8 @@ class PrayerController
         $this->prayerRepository = new PrayerRepository($db);
         $this->userRepository = new UserRepository($db);
         $this->herald = $herald;
+        $this->errorHandler = new ErrorHandlerMiddleware();
+        $this->authMiddleware = new AuthMiddleware();
     }
 
     public function listPrayers(Request $request, Response $response, $args)
@@ -56,13 +62,18 @@ class PrayerController
         $pageSize = max(1, min(100, (int)($params['limit'] ?? 10)));
         $offset = ($page - 1) * $pageSize;
 
-        $userId = $_SESSION['user']['id'] ?? 0;
-        $order = in_array(strtolower($params['order'] ?? ''), ['asc', 'desc']) ? strtolower($params['order']) : 'desc';
-
+        // Get user ID from session
+        $userId = $this->authMiddleware->getUserId();
+        if (!$userId) {
+            return $response
+                ->withHeader('Location', '/login')
+                ->withStatus(302);
+        }
+    
         $queryParams = [
             'page' => $page,
             'limit' => $pageSize,
-            'order' => $order,
+            'dir' => $params['order'] ?? 'DESC',
             'offset' => $offset
         ];
         $paginatedPrayers = $this->prayerRepository->getApprovedPrayersWithPrayedCountPaginated($queryParams, $userId);

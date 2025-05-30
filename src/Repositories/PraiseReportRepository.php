@@ -12,7 +12,7 @@ class PraiseReportRepository
         $this->db = $db;
     }
 
-    public function getApprovedPraiseReportsWithPrayedCountPaginated(array $queryParams, int $userId): array
+    public function getApprovedPraiseReportsWithPrayedCountPaginated(array $queryParams): array
     {
         $pagination = Paginator::paginate(
             $queryParams,
@@ -25,13 +25,13 @@ class PraiseReportRepository
             FROM praises p
             WHERE p.approved = TRUE
             GROUP BY p.id
-            ORDER BY {$pagination['sort']} {$pagination['direction']}
+            ORDER BY created_at {$pagination['direction']}
             LIMIT :limit OFFSET :offset
         ";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $pagination['limit'], PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $pagination['offset'], PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $queryParams['limit'], PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $queryParams['offset'], PDO::PARAM_INT);
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -47,6 +47,7 @@ class PraiseReportRepository
                 'page' => $pagination['page'],
                 'limit' => $pagination['limit'],
                 'offset' => $pagination['offset'],
+                'order' => $pagination['direction']
             ],
         ];
     }

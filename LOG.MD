@@ -36,16 +36,7 @@
 
 ## Phase 3: Stability + UX Polish (2–2.5 hrs)
 
-### 🔹 5. Fix DI Errors / Crashes (30–60 min)
-- [ ] Resolve missing dependencies (`$view`, `$db`) in `SettingsController`
-- [ ] Scan app for other DI-related or route-level crashes
-
-### 🔹 6. Pagination + Sorting for Praises (30 min)
-- [ ] Reuse existing pagination controls
-- [ ] Add `?page=` and `?limit=` query param handling for praises
-
 ### 🔹 7. Polish + Seed Data (1 hr)
-- [ ] Insert seed prayers and praises
 - [ ] Format dates and tidy card layout
 - [ ] Smoke test: submit, display, navigate, unapprove, toggle views
 
