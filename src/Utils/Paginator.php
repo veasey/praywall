@@ -9,7 +9,7 @@ class Paginator
         $page = max(1, (int)($queryParams['page'] ?? 1));
         $limit = max(1, min(100, (int)($queryParams['limit'] ?? $defaultLimit)));
         $sort = $queryParams['sort'] ?? 'created_at';
-        $direction = $queryParams['dir'] === 'ASC' ? 'ASC' : 'DESC';
+        $direction = $queryParams['order'] === 'ASC' ? 'ASC' : 'DESC';
 
         if (!in_array($sort, $allowedSorts)) {
             $sort = 'created_at';

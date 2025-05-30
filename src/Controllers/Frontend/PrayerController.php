@@ -61,6 +61,7 @@ class PrayerController
         $page = max(1, (int)($params['page'] ?? 1));
         $pageSize = max(1, min(100, (int)($params['limit'] ?? 10)));
         $offset = ($page - 1) * $pageSize;
+        $order = strtoupper($params['order'] ?? 'DESC');
 
         // Get user ID from session
         $userId = $this->authMiddleware->getUserId();
@@ -73,7 +74,7 @@ class PrayerController
         $queryParams = [
             'page' => $page,
             'limit' => $pageSize,
-            'dir' => $params['order'] ?? 'DESC',
+            'order' => $order,
             'offset' => $offset
         ];
         $paginatedPrayers = $this->prayerRepository->getApprovedPrayersWithPrayedCountPaginated($queryParams, $userId);
@@ -101,7 +102,7 @@ class PrayerController
                 $data['title'],
                 $data['body'],
                 $_SESSION['user']['id'],
-                $approved ? null : 0 // Set user_id to null if approved, otherwise 0
+                $approved ? 1 : 0 // Set user_id to null if approved, otherwise 0
             );
 
             // Send email notification to the admin
@@ -174,7 +175,7 @@ class PrayerController
             'redirect' => $request->getQueryParams()['redirect'] ?? 1,
             'limit'    => $pageSize,
             'page'     => $request->getQueryParams()['page'] ?? 1,
-            'order'    => $request->getQueryParams()['order'] ?? 'desc'
+            'order'    => $request->getQueryParams()['order'] ?? 'DESC'
         ]);
 
         // redirect back to prayers page with anchor and page param

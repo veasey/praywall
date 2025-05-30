@@ -12,3 +12,18 @@
         <option value="20" {{ pagination.limit == 20 ? 'selected' : '' }}>20</option>
     </select>
 </form>
+
+<div class="pagination-links">
+    {% set currentPage = pagination.page %}
+    {% set totalPages = (pagination.total / pagination.limit)|round(0, 'ceil') %}
+
+    {% if currentPage > 1 %}
+        <a href="?page={{ currentPage - 1 }}&order={{ pagination.order }}&limit={{ pagination.limit }}">Previous</a>
+    {% endif %}
+
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+    {% if currentPage < totalPages %}
+        <a href="?page={{ currentPage + 1 }}&order={{ pagination.order }}&limit={{ pagination.limit }}">Next</a>
+    {% endif %}
+</div>

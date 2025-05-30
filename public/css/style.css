@@ -188,6 +188,13 @@ button:hover {
   border-color: #999;
 }
 
+.pagination-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* ========== Layout Helpers ========== */
 .flex-box {
   display: flex;

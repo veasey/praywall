@@ -49,11 +49,12 @@ class PraiseController
         $page = max(1, (int)($params['page'] ?? 1));
         $pageSize = max(1, min(100, (int)($params['limit'] ?? 10)));
         $offset = ($page - 1) * $pageSize;
+        $order = $params['order'] ?? 'DESC';
 
         $queryParams = [
             'page' => $page,
             'limit' => $pageSize,
-            'dir' => $params['order'] ?? 'DESC',
+            'order' => $order,
             'offset' => $offset,
             
         ];
