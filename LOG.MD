@@ -108,6 +108,8 @@
 
 ## 📄 Pagination
 - [ ] Paginate all long lists:
-  - [ ] Prayer requests
-  - [ ] Praise posts
+  - [x] Prayer requests
+    - [ ] Moderator View
+  - [x] Praise posts
+    - [ ] Moderator View
   - [ ] User accounts in admin panel
