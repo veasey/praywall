@@ -15,7 +15,9 @@ class UserPrayerRepository
     public function getPrayersForPrayer(int $prayerId): array
     {
         $stmt = $this->db->prepare("
-            SELECT id, name
+            SELECT 
+                id, 
+                name
             FROM user_prayers
             LEFT JOIN users ON user_prayers.user_id = users.id
             WHERE user_prayers.prayer_id = :prayerId

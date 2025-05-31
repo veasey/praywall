@@ -8,8 +8,8 @@
   
   <form action="/praises/report" method="POST">
     <label for="prayer_id">Related Prayer:</label><br>
-    <select name="prayer_id" id="prayer_id" required>
-      <option value="">-- Select a Prayer --</option>
+    <select name="prayer_id" id="prayer_id">
+      <option selected value="">-- Not a response to prayer --</option>
       {% for prayer in prayers %}
         <option value="{{ prayer.id }}">{{ prayer.title|e }}</option>
       {% endfor %}

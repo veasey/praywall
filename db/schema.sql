@@ -39,16 +39,15 @@ CREATE TABLE IF NOT EXISTS prayers_prayed_by (
     FOREIGN KEY (prayer_id) REFERENCES prayers(id) ON DELETE CASCADE
 );
 
--- Praises table (linked to Prayers)
 CREATE TABLE IF NOT EXISTS praises (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    prayer_id INT UNSIGNED,
-    user_id INT UNSIGNED,
+    prayer_id INT UNSIGNED NULL,
+    user_id INT UNSIGNED NULL,
     title VARCHAR(255) NOT NULL,
     body TEXT NOT NULL,
     approved BOOLEAN DEFAULT FALSE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (prayer_id) REFERENCES prayers(id) ON DELETE CASCADE,
+    FOREIGN KEY (prayer_id) REFERENCES prayers(id) ON DELETE SET NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 

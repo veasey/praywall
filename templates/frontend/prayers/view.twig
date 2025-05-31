@@ -44,7 +44,7 @@
     {% if prayer.prayed_count > 0 %}
         <h3>People Prayering</h3>
         {% for user_prayer in user_prayers %}
-            <p>🙏 {{ user.name }}</p>
+            <p>🙏 {{ user_prayer.name }}</p>
         {% endfor %}
     {% endif %}
     

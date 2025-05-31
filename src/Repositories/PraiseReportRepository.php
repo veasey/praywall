@@ -69,7 +69,7 @@ class PraiseReportRepository
         return (int) $stmt->fetchColumn();
     }
 
-    public function insert(string $title, string $body, ?int $userId, int $prayerId, int $approved): bool
+    public function insert(string $title, string $body, ?int $userId, ?int $prayerId, int $approved): bool
     {
         $stmt = $this->db->prepare("
             INSERT INTO praises (title, body, user_id, prayer_id, approved) 

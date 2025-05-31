@@ -11,6 +11,7 @@ use App\Middleware\ErrorHandlerMiddleware;
 use App\Middleware\AuthMiddleware;
 use Slim\Views\Twig;
 use PDO;
+use PhpParser\Node\Expr\Cast;
 
 class PraiseController
 {
@@ -78,11 +79,16 @@ class PraiseController
                     ->withStatus(302);
             }
 
+            $prayerId = isset($data['prayer_id']) && 
+                        is_numeric($data['prayer_id']) && 
+                        $data['prayer_id'] !== '' ? 
+                    (int) $data['prayer_id'] : null;
+
             $this->praiseRepo->insert(
                 $data['title'],
                 $data['body'],
                 $userId,
-                $data['prayer_id'] ?? null,
+                $prayerId,
                 $approved
             );
 
