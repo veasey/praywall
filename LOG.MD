@@ -38,7 +38,7 @@
 ---
 
 ## 🚀 Bonus (Optional if Time Allows)
-- [ ] Link from each prayer to its praises (anchor or modal)
+- [x] Link from each prayer to its praises (anchor or modal)
 - [ ] Improve mobile layout and responsiveness
 
 
@@ -49,19 +49,18 @@
   - [ ] Search prayers and praises
   - [ ] Sort by newest / oldest / length
 - [ ] User management (excluding other moderators/admins):
-  - [ ] Change user name
-  - [ ] Change user email
+  - [x] Change user name
+  - [x] Change user email
   - [ ] Send password reset request
-  - [ ] Shadow ban (quiet mute):
-    - [ ] Block prayer submissions
-    - [ ] Block praise submissions
-  - [ ] Delete user accounts
+  - [x] Shadow ban (quiet mute):
+    - [ ] Shadow Ban Logic
+  - [x] Delete user accounts
 
 ---
 
 ## 🙏 Praise Requests
 - [ ] (Optional) Convert a prayer to praise from the prayer card
-- [ ] Moderator approval flow for praise requests
+- [x] Moderator approval flow for praise requests
 
 ---
 
@@ -78,16 +77,16 @@
 ---
 
 ## 👤 User Settings
-- [ ] Allow users to update:
-  - [ ] Display name
-  - [ ] Email address
+- [x] Allow users to update:
+  - [x] Display name
+  - [x] Email address
 
 ---
 
 ## 🧠 Admin Dashboard
 - [ ] Overview of:
   - [ ] Total users
-  - [ ] Pending prayer/praise approvals
+  - [x] Pending prayer/praise approvals
   - [ ] Shadow-banned users
   - [ ] Feedback or abuse reports
 
