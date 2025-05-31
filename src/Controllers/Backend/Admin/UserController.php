@@ -35,7 +35,7 @@ class UserController
             'page' => $page,
             'limit' => $limit,
             'sort' => $sort,
-            'dir' => $direction,
+            'order' => $direction,
             
             // filters
             'role' => $role,
