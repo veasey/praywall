@@ -12,7 +12,7 @@ class PrayerRepository
         $this->db = $db;
     }
 
-    public function getApprovedPrayersWithPrayedCountPaginated(array $queryParams, int $userId): array
+    public function getApprovedPrayersWithPrayedCountPaginated(array $queryParams, ?int $userId): array
     {
         $pagination = Paginator::paginate(
             $queryParams,
@@ -20,15 +20,12 @@ class PrayerRepository
             allowedSorts: ['created_at']
         );
 
+        $existsQuery = $this->getExistsQuery($userId);
         $sql = "
             SELECT 
                 p.*,
                 COUNT(DISTINCT up.user_id) AS prayed_count,
-                EXISTS (
-                    SELECT 1 
-                    FROM user_prayers up2 
-                    WHERE up2.prayer_id = p.id AND up2.user_id = :user_id
-                ) AS has_prayed
+                $existsQuery
             FROM prayers p
             LEFT JOIN user_prayers up ON p.id = up.prayer_id
             WHERE p.approved = TRUE
@@ -38,7 +35,9 @@ class PrayerRepository
         ";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        if ($userId) {
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        }
         $stmt->bindValue(':limit', $queryParams['limit'], PDO::PARAM_INT);
         $stmt->bindValue(':offset', $queryParams['offset'], PDO::PARAM_INT);
         $stmt->execute();
@@ -61,6 +60,42 @@ class PrayerRepository
             ],
         ];
     }
+
+    public function getPrayerById(int $id, ?int $userId): ?array
+    {
+        $existsQuery = $this->getExistsQuery($userId);
+        $stmt = $this->db->prepare("
+            SELECT 
+                p.*,
+                COUNT(DISTINCT up.user_id) AS prayed_count,
+                $existsQuery
+            FROM prayers p
+            LEFT JOIN user_prayers up ON p.id = up.prayer_id
+            WHERE p.id = :id
+            GROUP BY p.id
+        ");
+        if ($userId) {
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        }
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        // Fetch the prayer and its prayed count
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    private function getExistsQuery(?int $userId): string
+    {
+        if ($userId) {
+            return "
+                EXISTS (
+                    SELECT 1 
+                    FROM user_prayers up 
+                    WHERE up.prayer_id = p.id AND up.user_id = :user_id
+                ) AS has_prayed
+            ";
+        }
+        return "FALSE AS has_prayed";
+    }  
 
     private function attachInlinePrayerContent(array $prayers): array
     {
@@ -218,28 +253,5 @@ class PrayerRepository
                 ':prayer_id' => $prayerId
             ]);
         }
-    }
-
-    public function getPrayerById(int $id, int $userId): ?array
-    {
-        $stmt = $this->db->prepare("
-            SELECT 
-                p.*,
-                COUNT(DISTINCT up.user_id) AS prayed_count,
-                EXISTS (
-                    SELECT 1 
-                    FROM user_prayers up2 
-                    WHERE up2.prayer_id = p.id AND up2.user_id = :user_id
-                ) AS has_prayed
-            FROM prayers p
-            LEFT JOIN user_prayers up ON p.id = up.prayer_id
-            WHERE p.id = :id
-            GROUP BY p.id
-        ");
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        // Fetch the prayer and its prayed count
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-    }
+    } 
 }

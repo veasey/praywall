@@ -72,11 +72,6 @@ class PrayerController
 
         // Get user ID from session
         $userId = $this->authMiddleware->getUserId();
-        if (!$userId) {
-            return $response
-                ->withHeader('Location', '/login')
-                ->withStatus(302);
-        }
     
         $queryParams = [
             'page' => $page,
