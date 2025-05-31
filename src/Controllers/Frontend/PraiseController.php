@@ -24,7 +24,6 @@ class PraiseController
     private ErrorHandlerMiddleware $errorHandler;
     private AuthMiddleware $authMiddleware;
 
-
     // Constructor that injects the Twig view service
     public function __construct(
         Twig $view, 
@@ -108,6 +107,21 @@ class PraiseController
  
         return $this->view->render($response, 'frontend/praise_reports/request.twig', [
             'prayers' => $parentPrayers,
+        ]);
+    }
+
+    public function viewPraiseReport(Request $request, Response $response, $args)
+    {
+        $praiseReport = $this->praiseRepo->getById($args['id']);
+        if (!$praiseReport) {
+            $this->errorHandler->addError('Praise report not found');
+            return $response
+                ->withHeader('Location', '/praises')
+                ->withStatus(404);
+        }
+
+        return $this->view->render($response, 'frontend/praise_reports/view.twig', [
+            'praise' => $praiseReport,
         ]);
     }
 

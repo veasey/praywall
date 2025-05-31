@@ -18,18 +18,21 @@ return function (App $app) {
         // communial prayer
         $group->get('/request', [PrayerController::class, 'prayerRequest'])->add(new AuthMiddleware());
         $group->post('/request', [PrayerController::class, 'prayerRequest'])->add(new AuthMiddleware());
-        $group->post('/pray/{id}', [PrayerController::class, 'pray'])->add(new AuthMiddleware());
+       
+        $group->post('/pray/{id}/list', [PrayerController::class, 'prayFromList'])->add(new AuthMiddleware());
+        $group->post('/pray/{id}/view', [PrayerController::class, 'prayFromView'])->add(new AuthMiddleware());
 
         $group->get('', [PrayerController::class, 'listPrayers']);
         $group->get('/{id}', [PrayerController::class, 'viewPrayer']);
     });
 
     // Praise Reports
-    $app->get('/praises', [PraiseController::class, 'listPraiseReports']);
     $app->group('/praises', function ($group) {
         $group->get('/report', [PraiseController::class, 'praiseReport']);
         $group->post('/report', [PraiseController::class, 'praiseReport']);
     })->add(new AuthMiddleware());
+    $app->get('/praises', [PraiseController::class, 'listPraiseReports']);
+    $app->get('/praises/{id}', [PraiseController::class, 'viewPraiseReport']);
 
     // Logon Form
     $app->get('/login', [AuthController::class, 'showLoginForm']);

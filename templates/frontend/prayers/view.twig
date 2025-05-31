@@ -6,46 +6,47 @@
   {{ include('partials/tab_bar.twig') }}  
   <div class="tab-container">
 
-    <div class="prayer-card" id="prayer-{{ prayer.id }}">
-
-        {% if user and user.role != 'user' %}
-            <div class="unapprove-button">
-            <a href="/moderate/unapprove/prayer/{{prayer.id}}">Unapprove</a>
-            </div>
-        {% endif %}
-
-        <h2>{{ prayer.title }}</h2>
-        <p>{{ prayer.body }}</p>
-
-        <div class="prayer-card-footer">
-            {% set prayUrl = "/prayers/pray/" ~ prayer.id ~ "?page=" ~ currentPage ~ "&limit=" ~ (limit|default(10)) ~ "#prayer-" ~ prayer.id %}
-            <form method="post" action="{{ prayUrl }}" class="pray-form">
-            <button 
-                type="submit" 
-                class="pray-button {% if prayer.has_prayed %}prayed{% else %}not-prayed{% endif %}"
-            >
-                🙏 
-                {% if prayer.has_prayed %}
-                You prayed ({{ prayer.prayed_count }})
-                {% else %}
-                Pray ({{ prayer.prayed_count > 0 ? prayer.prayed_count : '0' }})
-                {% endif %}
-            </button>
-            </form>
-
-            <p class="date">
-            {{ prayer.created_at|date("F jS \\a\\t g:ia")  }}
-            </p>
+    {% if user and user.role != 'user' %}
+        <div class="unapprove-button">
+        <a href="/moderate/unapprove/prayer/{{prayer.id}}">Unapprove</a>
         </div>
-    </div>
+    {% endif %}
 
+    <h2>{{ prayer.title }}</h2>
+    <p>{{ prayer.body }}</p>
+
+    <div class="prayer-card-footer">
+        {% set prayUrl = "/prayers/pray/" ~ prayer.id ~ "/view" %}
+        <form method="post" action="{{ prayUrl }}" class="pray-form">
+        <button 
+            type="submit" 
+            class="pray-button {% if prayer.has_prayed %}prayed{% else %}not-prayed{% endif %}"
+        >
+            🙏 
+            {% if prayer.has_prayed %}
+            You prayed ({{ prayer.prayed_count }})
+            {% else %}
+            Pray ({{ prayer.prayed_count > 0 ? prayer.prayed_count : '0' }})
+            {% endif %}
+        </button>
+        </form>
+
+        <p class="date">
+            {{ prayer.created_at|date("F jS \\a\\t g:ia")  }}
+        </p>
+    </div>
+    
     {% for praise in praises %}
         {{ include('partials/praise/card.twig') }}
     {% endfor %}
 
-    {% for user_prayer in user_prayers %}
-        <p>🙏 {{ name }}</p>
-    {% endfor %}
+    <br />
+    {% if prayer.prayed_count > 0 %}
+        <h3>People Prayering</h3>
+        {% for user_prayer in user_prayers %}
+            <p>🙏 {{ user.name }}</p>
+        {% endfor %}
+    {% endif %}
     
   </div>
 

@@ -91,9 +91,10 @@ class PrayerController
     public function viewPrayer(Request $request, Response $response, $args)
     {
         $prayerId = (int)$args['id'];
+        $userId = $this->authMiddleware->getUserId() ?? null;
        
         // Get the prayer details
-        $prayer = $this->prayerRepo->getPrayerById($prayerId);
+        $prayer = $this->prayerRepo->getPrayerById($prayerId, $userId);
         if (!$prayer) {
             $this->errorHandler->addError(new Error("Prayer not found"));
             return $response
@@ -184,21 +185,12 @@ class PrayerController
                 ->withStatus(302);
     }
 
-    public function pray(Request $request, Response $response, $args)
+    public function prayFromList(Request $request, Response $response, $args)
     {
-        $user = $_SESSION['user'] ?? null;
-
-        if (!$user) {
-            return $response
-                ->withHeader('Location', '/login')
-                ->withStatus(302);
-        }
-
-        $userId = $user['id'];
         $prayerId = $args['id'];
-        $pageSize = max(1, min(100, (int)($request->getQueryParams()['limit'] ?? 10)));
+        $this->pray($prayerId, $response);
 
-        $this->prayerRepo->togglePrayed($userId, $prayerId);
+        $pageSize = max(1, min(100, (int)($request->getQueryParams()['limit'] ?? 10)));      
         
         // get redirect query param
         $queryParams = http_build_query([
@@ -212,5 +204,26 @@ class PrayerController
         return $response
             ->withHeader('Location', "/prayers?" . $queryParams . "#prayer-$prayerId")
             ->withStatus(302);
+    }
+
+    public function prayFromView(Request $request, Response $response, $args)
+    {
+        $prayerId = $args['id'];
+        $this->pray($prayerId, $response);
+         return $response
+            ->withHeader('Location', "/prayers/" . $prayerId)
+            ->withStatus(302);
+    }
+
+    private function pray(int $prayerId, Response $response)
+    {
+        $userId = $this->authMiddleware->getUserId();
+        if (!$userId) {
+            return $response
+                ->withHeader('Location', '/login')
+                ->withStatus(302);
+        }
+    
+        return $this->prayerRepo->togglePrayed($userId, $prayerId);
     }
 }

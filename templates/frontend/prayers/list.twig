@@ -35,7 +35,12 @@
           </div>
         {% endif %}
 
-        <h2>{{ prayer.title }}</h2>
+        <h2>
+            <a href="/prayers/{{ prayer.id }}">
+                {{ prayer.title }}
+            </a>
+        </h2>
+
         <p>{{ prayer.body }}</p>
 
         {% if prayer.praises and prayer.praises|length > 0 %}
@@ -47,7 +52,7 @@
         {% endif %}
 
         <div class="prayer-card-footer">
-          {% set prayUrl = "/prayers/pray/" ~ prayer.id ~ "?page=" ~ currentPage ~ "&limit=" ~ (limit|default(10)) ~ "#prayer-" ~ prayer.id %}
+          {% set prayUrl = "/prayers/pray/" ~ prayer.id ~ "/list?page=" ~ currentPage ~ "&limit=" ~ (limit|default(10)) ~ "#prayer-" ~ prayer.id %}
           <form method="post" action="{{ prayUrl }}" class="pray-form">
             <button 
               type="submit" 

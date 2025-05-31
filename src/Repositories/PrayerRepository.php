@@ -187,7 +187,7 @@ class PrayerRepository
         return $stmt->execute([':id' => $id]);
     }
 
-    public function togglePrayed(int $userId, int $prayerId): void
+    public function togglePrayed(int $userId, int $prayerId): bool
     {
         // Insert or delete from user_prayers table
         $stmt = $this->db->prepare("
@@ -201,7 +201,7 @@ class PrayerRepository
 
         if ($stmt->fetch()) {
             // User already prayed — remove it
-            $this->db->prepare("
+            return $this->db->prepare("
                 DELETE FROM user_prayers 
                 WHERE user_id = :user_id AND prayer_id = :prayer_id
             ")->execute([
@@ -210,7 +210,7 @@ class PrayerRepository
             ]);
         } else {
             // Add the prayer
-            $this->db->prepare("
+            return $this->db->prepare("
                 INSERT INTO user_prayers (user_id, prayer_id) 
                 VALUES (:user_id, :prayer_id)
             ")->execute([
@@ -220,14 +220,26 @@ class PrayerRepository
         }
     }
 
-    public function getPrayerById(int $id): ?array
+    public function getPrayerById(int $id, int $userId): ?array
     {
         $stmt = $this->db->prepare("
-            SELECT * 
-            FROM prayers 
-            WHERE id = :id
+            SELECT 
+                p.*,
+                COUNT(DISTINCT up.user_id) AS prayed_count,
+                EXISTS (
+                    SELECT 1 
+                    FROM user_prayers up2 
+                    WHERE up2.prayer_id = p.id AND up2.user_id = :user_id
+                ) AS has_prayed
+            FROM prayers p
+            LEFT JOIN user_prayers up ON p.id = up.prayer_id
+            WHERE p.id = :id
+            GROUP BY p.id
         ");
-        $stmt->execute([':id' => $id]);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        // Fetch the prayer and its prayed count
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 }

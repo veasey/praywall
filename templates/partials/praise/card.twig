@@ -6,7 +6,11 @@
         </div>
     {% endif %}
 
-    <h2>{{ praise.title }}</h2>
+    <h2>
+        <a href="/praises/{{ praise.id }}">
+            {{ praise.title }}
+        </a>
+    </h2>
     <p>{{ praise.body }}</p>
 
     <div class="prayer-card-footer">

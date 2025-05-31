@@ -124,4 +124,16 @@ class PraiseReportRepository
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? null;
     }
+
+    public function getById(int $id): ?array
+    {
+        $stmt = $this->db->prepare("
+            SELECT * 
+            FROM praises 
+            WHERE id = :id
+        ");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
 }

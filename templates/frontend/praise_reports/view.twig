@@ -1,0 +1,30 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+  {% set currentTab = 'praises' %}
+  {{ include('partials/tab_bar.twig') }}  
+  <div class="tab-container">
+
+    {% if user and user.role != 'user' %}
+        <div class="unapprove-button">
+        <a href="/moderate/unapprove/praise/{{prayer.id}}">Unapprove</a>
+        </div>
+    {% endif %}
+
+    <h2>{{ praise.title }}</h2>
+    <p>{{ praise.body }}</p>
+
+    <div class="prayer-card-footer">
+        <p class="date">
+            {{ praise.created_at|date("F jS \\a\\t g:ia")  }}
+        </p>
+    </div>
+
+    {% if praise.prayer_id %}
+        <a href="/prayer/{{ praise.prayer_id}}>In response to prayer</a>
+    {% endif %}
+    
+  </div>
+
+{% endblock %}
